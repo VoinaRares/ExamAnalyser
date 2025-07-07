@@ -1,0 +1,20 @@
+<div>
+  <label>
+    Exam Type:
+    <input #examTypeInput value="bac" />
+  </label>
+  <label>
+    Year:
+    <input #yearInput value="2025" />
+  </label>
+  <button (click)="fetchData(examTypeInput.value, yearInput.value)">Load Exam Data</button>
+</div>
+
+<div *ngIf="data">
+  <h3>Exam Data:</h3>
+  <pre>{{ data | json }}</pre>
+</div>
+
+<div *ngIf="error">
+  <p style="color: red;">Error: {{ error.message }}</p>
+</div>
