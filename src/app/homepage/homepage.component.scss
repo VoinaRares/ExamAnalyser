@@ -1,48 +1,93 @@
-.card-container {
-  min-height: 100vh;
+$background-color: #ecfcff;
+$main-card-left-margin: 3%;
+
+.page {
+  margin: 0;
+  background-color: $background-color;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+
+.left {
+  width: 40%;
+  height: 100%;
+}
+
+.right {
+  width: 60%;
+  height: 100%;
+}
+
+.main-card {
+  position: relative;
+  width: 80%;
+  margin-left: 10%;
+  height: 70%;
+  margin-top: 11%;
+  border-radius: 12px;
+  background-color: rgba(181, 179, 179, 0.245);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%);
-  gap: 2rem;
+  border: black;
 }
 
-h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 2rem;
-  letter-spacing: 1px;
-}
+.upper-part {
+  height: 10%;
+  width: 100%;
+  background-color: rgb(22, 91, 132);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 
-.cards-row {
   display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  justify-content: center;
-  align-items: stretch;
-}
+  align-items: center;
 
-p-card {
-  width: 320px;
-  box-shadow: 0 4px 24px 0 rgba(44, 62, 80, 0.08);
-  border-radius: 1rem;
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-  margin-bottom: 0.5rem;
-  text-align: center;
-
-  .p-card-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+  h2 {
+    margin-left: $main-card-left-margin;
+    font-size: 30px;
   }
 }
 
-p-card:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 8px 32px 0 rgba(44, 62, 80, 0.16);
+.bottom {
+  height: 90%;
+  width: 100%;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+
+.feature-card {
+  background-color: ghostwhite;
+  height: 25%;
+  width: calc(100% - 2*$main-card-left-margin);
+  color: black;
+  border-radius: 10px;
+  margin-left: $main-card-left-margin;
+
+
+  .feature-title,
+  .feature-description {
+    margin-left: 2%;
+  }
+
+  .feature-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #163b5c;
+    margin-top: 10px;
+  }
+
+  .feature-description {
+    margin-top: 0;
+    font-size: 18px;
+    color: #555;
+  }
+}
+
+.feature-card:hover {
+  background-color: gray;
 }
