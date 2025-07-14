@@ -1,7 +1,11 @@
 <div class="page">
   <div class="left">
-    <h2>AILiceu</h2>
-    <p>O platformă care te ajută să alegi un liceu în mod inteligent</p>
+    <div class="description">
+      <h2 class="app-title">AILiceu</h2>
+      <p class="description-text">O platformă care te ajută să îți alegi liceul în care vei învăța în următorii patru ani. </p>
+      <p class="description-text">Cu ajutorul algoritmului nostru poți să primești sugestia cea mai potrivită pentru liceu sau poți 
+        să analizezi opțiunile care ți s-ar potrivi cel mai bine în funcție de media obținută la examenul de Evaluare Națională </p>
+    </div>
   </div>
   <div class="right">
     <div class="main-card">
@@ -9,17 +13,23 @@
         <h2>Cu ce te putem ajuta?</h2>
       </div>
       <div class="bottom">
-        <div class="feature-card">
+        <div class="feature-card" (click)="goToStats()">
           <h3 class="feature-title">Statistici BAC</h3>
           <p class="feature-description">
             Statisticile liceelor privitoare la promovabilitate și medie BAC
           </p>
         </div>
         <div class="feature-card">
-          Medii admitere licee
+          <h3 class="feature-title">Medii admitere licee</h3>
+          <p class="feature-description">
+            Vezi la ce licee ai intra în funcție de media pe care ai obținut-o la examen
+          </p>
         </div>
         <a class="feature-card" [routerLink]="['/recomandare-liceu']" style="text-decoration: none; cursor: pointer;">
           <h3 class="feature-title">Vezi recomandarea de liceu</h3>
+          <p class="feature-description">
+            Vezi ce liceu ți s-ar potrivi în funcție de profil, notele de la examen și performanțele liceului.
+          </p>
         </a>
       </div>
     </div>

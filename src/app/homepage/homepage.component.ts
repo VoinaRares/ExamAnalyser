@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CardModule } from 'primeng/card';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-homepage',
@@ -10,5 +10,10 @@ import { RouterModule } from '@angular/router';
   standalone: true
 })
 export class HomepageComponent {
+  router=inject(Router)
 
+  goToStats()
+  {
+    this.router.navigate(['statistici-licee']);
+  }
 }
