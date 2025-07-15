@@ -1,1 +1,13 @@
-<p>selector judet</p>
+<div class="select-container">
+  <label for="county-select">Selectează județul</label>
+  <select id="county-select" [(ngModel)]="selectedCounty">
+    <option value="" disabled selected hidden>Alege un județ</option>
+    @for (county of counties; track $index) {
+      <option [value]="county">{{ county }}</option>
+    }
+  </select>
+
+  <button class="continue-btn" (click)="emitSelectedCounty()" [disabled]="!selectedCounty">
+    Continuă
+  </button>
+</div>

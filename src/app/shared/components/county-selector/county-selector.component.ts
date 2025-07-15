@@ -1,11 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { County } from '../../county.enum';
 
 @Component({
   selector: 'app-county-selector',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './county-selector.component.html',
   styleUrl: './county-selector.component.scss'
 })
 export class CountySelectorComponent {
+    selectedCounty: County| ''=''
+    county=output<string>()
 
+    counties = Object.values(County); 
+
+    emitSelectedCounty()
+    {
+      console.log(this.selectedCounty)
+      this.county.emit(this.selectedCounty);
+    }
+
+    
 }

@@ -1,6 +1,6 @@
 <div class="main-body">
     @if(selectedCounty=='')
     {
-        
+        <app-county-selector (county)="onCountySelected($event)"></app-county-selector>
     }
 </div>
