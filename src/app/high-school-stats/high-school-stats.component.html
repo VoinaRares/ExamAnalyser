@@ -1,6 +1,83 @@
 <div class="main-body">
     @if(selectedCounty=='')
     {
-        <app-county-selector (county)="onCountySelected($event)"></app-county-selector>
+    <app-county-selector (county)="onCountySelected($event)"></app-county-selector>
+    }
+    @else{
+    <div class="top-bar">
+        <div class="left-section">
+            <span class="county-name">Județul: {{ selectedCounty }}</span>
+            <button class="btn" (click)="selectedCounty = ''">Schimbă județul</button>
+        </div>
+        <div class="right-section">
+            <button class="btn" (click)="showFilter()">Filtrează</button>
+            <button class="btn" (click)="showSort()">Sortează</button>
+        </div>
+    </div>
+    <div class="active-filters">
+        @if(sortCriteria){
+             <span>Sortare: {{ sortCriteria }}</span>
+        }
+        @if(filters.profil.length){
+             <span>Profiluri: {{ filters.profil.join(', ') }}</span>
+        }
+
+        @if(filters.minMean)
+        {
+              <span>Medie minimă: {{ filters.minMean }}</span>
+        }
+
+        @if(filters.minPromotionPercent)
+        {
+            <span>Promovabilitate minimă: {{ filters.minPromotionPercent }}%</span>
+        }
+    </div>
+    @if(showSortModal)
+    {
+    <div class="modal">
+        <div class="modal-content">
+            <h3>Sortare</h3>
+            <label><input type="radio" name="sort" value="bac-asc" (change)="applySort('bac-asc')"> BAC ↑</label>
+            <label><input type="radio" name="sort" value="bac-desc" (change)="applySort('bac-desc')"> BAC ↓</label>
+            <label><input type="radio" name="sort" value="prom-asc" (change)="applySort('prom-asc')"> Promovabilitate
+                ↑</label>
+            <label><input type="radio" name="sort" value="prom-desc" (change)="applySort('prom-desc')"> Promovabilitate
+                ↓</label>
+            <button class="btn" (click)="showSortModal = false">Închide</button>
+        </div>
+    </div>
+    }
+    @if(showFilterModal){
+    <div class="modal">
+        <div class="modal-content">
+            <h3>Filtrare</h3>
+
+            <label>Profil:</label>
+            <select multiple [(ngModel)]="filters.profil">
+                @for( p of availableProfiles; track $index)
+                {
+                     <option [value]="p">{{ p }}</option>
+                }
+            </select>
+
+            <label>Medie minimă:</label>
+            <input type="number" [(ngModel)]="filters.minMean" min="0" max="10" step="0.1" />
+
+            <label>Promovabilitate minimă (%):</label>
+            <input type="number" [(ngModel)]="filters.minPromotionPercent" min="0" max="100" step="1" />
+
+            <div class="modal-actions">
+                <button class="btn" (click)="applyFilters()">Aplică</button>
+                <button class="btn" (click)="resetFilters()">Reset</button>
+                <button class="btn" (click)="showFilterModal = false">Închide</button>
+            </div>
+        </div>
+    </div>
+    }
+
+    <div class="high-schools-list">
+        Aici pun carduri cu scolile
+    </div>
+
     }
 </div>
