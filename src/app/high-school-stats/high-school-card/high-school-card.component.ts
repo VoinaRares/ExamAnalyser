@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
+import { HighschoolStats } from '../../shared/model/highSchoolStats';
 
 @Component({
   selector: 'app-high-school-card',
@@ -7,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './high-school-card.component.scss'
 })
 export class HighSchoolCardComponent {
-
+    stats=input<HighschoolStats>();
 }

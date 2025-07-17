@@ -1,1 +1,10 @@
-<p>high-school-card works!</p>
+<div class="card">
+    <div class="title">{{ stats()?.highschool }}</div>
+
+    <div class="details-row">
+        <div class="detail"><strong>Profil:</strong> {{ stats()?.profile }}</div>
+        <div class="detail"><strong>Media:</strong> {{ stats()?.averageGrade }}</div>
+        <div class="detail"><strong>Promovare:</strong> {{ stats()?.passingPercentage }}%</div>
+        <div class="detail"><strong>Candidați:</strong> {{ stats()?.totalCandidates }}</div>
+    </div>
+</div>

@@ -61,7 +61,13 @@ $card-bg:rgb(108, 150, 218);
     }
   }
 }
-
+.high-schools-list
+{
+  height: 90%;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
 //filters and sortings zone
 .active-filters {
   padding: 1rem 2rem;

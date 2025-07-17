@@ -3,17 +3,23 @@ import { CountySelectorComponent } from '../shared/components/county-selector/co
 import { County } from '../shared/county.enum';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { HighschoolStats } from '../shared/model/highSchoolStats';
+import { HighSchoolCardComponent } from './high-school-card/high-school-card.component';
+import { baccalaureateService } from '../shared/service/Baccalaureate.service';
+import { CountyAbbreviation } from '../shared/countyAbbreviation.enum';
 
 @Component({
   selector: 'app-high-school-stats',
-  imports: [CountySelectorComponent, FormsModule],
+  imports: [CountySelectorComponent, FormsModule, HighSchoolCardComponent],
   templateUrl: './high-school-stats.component.html',
   styleUrl: './high-school-stats.component.scss'
 })
 export class HighSchoolStatsComponent {
   selectedCounty: County | '' = '';
+
   router = inject(Router)
   route = inject(ActivatedRoute);
+  highschoolService = inject(baccalaureateService);
 
   showFilterModal = false;
   showSortModal = false;
@@ -26,13 +32,27 @@ export class HighSchoolStatsComponent {
   };
   availableProfiles = ['Matematică-Informatică', 'Științe ale Naturii', 'Uman', 'Tehnologic', 'Vocational'];
 
-  sortCriteria='BAC'
+  sortCriteria = 'BAC'
+
+  highschoolsArray: HighschoolStats[] = []
+
+  showHighschoolsArray: HighschoolStats[] = [] //here will be highschools in right order respecting the filters
+
 
   ngOnInit(): void {
     const countyParam = this.route.snapshot.paramMap.get('county');
     if (countyParam && Object.values(County).includes(countyParam as County)) {
       this.selectedCounty = countyParam as County;
     }
+    const abbreviation = CountyAbbreviation[countyParam as keyof typeof CountyAbbreviation];
+
+    this.highschoolService.getStatsByCounty(abbreviation).subscribe((data) => {
+      this.highschoolsArray = data;
+      this.showHighschoolsArray = data;
+
+      // aici datele sunt gata
+      console.log(this.highschoolsArray);
+    });
   }
 
   onCountySelected(county: string) {
@@ -41,11 +61,11 @@ export class HighSchoolStatsComponent {
   }
 
   applySort(sortType: string) {
-    this.sortCriteria=sortType
+    this.sortCriteria = sortType
   }
 
   applyFilters() {
-    this.showFilterModal=false
+    this.showFilterModal = false
   }
 
   showSort() {
@@ -56,8 +76,7 @@ export class HighSchoolStatsComponent {
     this.showFilterModal = true;
   }
 
-  resetFilters()
-  {
+  resetFilters() {
 
   }
 }

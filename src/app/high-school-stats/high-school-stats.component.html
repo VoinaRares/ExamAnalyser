@@ -76,7 +76,10 @@
     }
 
     <div class="high-schools-list">
-        Aici pun carduri cu scolile
+       @for(s of  showHighschoolsArray; track $index)
+       {
+            <app-high-school-card [stats]="s"></app-high-school-card>
+       }
     </div>
 
     }
