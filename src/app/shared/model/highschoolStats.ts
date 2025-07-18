@@ -3,5 +3,5 @@ export interface HighschoolStats {
   averageGrade: number;
   passingPercentage: number; 
   totalCandidates: number;
-  profile: string;
+  profile: string[];
 }
