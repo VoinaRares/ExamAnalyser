@@ -1,36 +1,76 @@
-  import { Component } from '@angular/core';
-  import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-  import { InputNumberModule } from 'primeng/inputnumber';
-  import { InputTextModule } from 'primeng/inputtext';
-  import { ButtonModule } from 'primeng/button';
-  import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { DataService } from '../data.service';
+import { SchoolCardComponent } from '../school-cards/school-card.component';
+import { SpecializationGroup } from '../specialization-group.interface';
 
-  @Component({
-    selector: 'app-highschool-form',
-    standalone: true,
-    imports: [ReactiveFormsModule, InputNumberModule, InputTextModule, ButtonModule, CommonModule],
-    templateUrl: './highschool-form.component.html',
-    styleUrl: './highschool-form.component.scss'
-  })
-  export class HighschoolFormComponent {
-    years = [
-      { label: '2025', value: 2025 },
-      { label: '2024', value: 2024 },
-      { label: '2023', value: 2023 },
-      { label: '2022', value: 2022 }
-    ];
-    form: FormGroup;
+@Component({
+  selector: 'app-highschool-form',
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    InputNumberModule,
+    InputTextModule,
+    ButtonModule,
+    SchoolCardComponent
+  ],
+  templateUrl: './highschool-form.component.html',
+  styleUrl: './highschool-form.component.scss'
+})
+export class HighschoolFormComponent implements OnInit {
+  form: FormGroup<{
+    county: FormControl<string | null>;
+    year: FormControl<number | null>;
+    grade: FormControl<number | null>;
+    delimiter: FormControl<number | null>;
+  }>;
 
-    constructor(private fb: FormBuilder) {
-      this.form = this.fb.group({
-        year: [null, Validators.required],
-        grade: [null, [Validators.required, Validators.min(1), Validators.max(10)]],
-        delimiter: ['']
+  counties = [
+    { label: 'Brașov', value: 'brasov' },
+  ];
+
+  years: number[] = [];
+  specializationGroups: SpecializationGroup[] = [];
+
+  constructor(private fb: FormBuilder, private dataService: DataService) {
+    this.form = this.fb.group({
+      county: this.fb.control<string | null>(null, Validators.required),
+      year: this.fb.control<number | null>(null, Validators.required),
+      grade: this.fb.control<number | null>(null, [Validators.required, Validators.min(1), Validators.max(10)]),
+      delimiter: this.fb.control<number | null>(null)
+    });
+  }
+
+  ngOnInit() {
+    this.form.get('county')?.valueChanges.subscribe((county) => {
+      if (county) {
+        this.dataService.getAvailableYears(county).subscribe((years: number[]) => {
+          this.years = years;
+          this.form.get('year')?.reset();
+        });
+      }
+    });
+  }
+
+  onSubmit() {
+    if (!this.form.valid) {
+      console.warn('Form is invalid');
+      return;
+    }
+
+    const { county, year, grade } = this.form.value;
+
+    if (county && year && grade != null) {
+      this.dataService.getGroupedSchools(county, year).subscribe((groups: SpecializationGroup[]) => {
+        this.specializationGroups = groups
+          .filter((group) => grade >= group.lowestAdmissionGrade)
+          .sort((a, b) => b.lowestAdmissionGrade - a.lowestAdmissionGrade);
       });
     }
-
-    onSubmit() {
-      // For now, do nothing or log the form value
-      console.log(this.form.value);
-    }
   }
+}

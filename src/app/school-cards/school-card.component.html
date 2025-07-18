@@ -1,0 +1,8 @@
+<p-card [header]="specialization.school">
+  <div class="p-text-secondary">
+    <div><strong>Specializare:</strong> <span [innerHTML]="specialization.specialization"></span></div>
+    <div><strong>Limba:</strong> {{ specialization.language }}</div>
+    <div><strong>Prima medie:</strong> {{ specialization.highestAdmissionGrade.toFixed(2) }}</div>
+    <div><strong>Ultima medie:</strong> {{ specialization.lowestAdmissionGrade.toFixed(2) }}</div>
+  </div>
+</p-card>

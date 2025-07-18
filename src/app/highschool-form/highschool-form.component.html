@@ -1,36 +1,59 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="highschool-form">
-  <div class="form-group">
-    <label for="year">Anul</label>
-    <select id="year" formControlName="year" class="form-select">
-      <option value="" disabled>Selectează anul</option>
-      <option *ngFor="let y of years" [value]="y.value">{{ y.label }}</option>
-    </select>
+<div class="page-container">
+  <div class="form-wrapper">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <h2>Admitere Liceu</h2>
+
+      <label for="county">Județ</label>
+      <select id="county" formControlName="county">
+        <option [ngValue]="null" disabled selected>Selectează județ</option>
+        <option *ngFor="let county of counties" [ngValue]="county.value">
+          {{ county.label }}
+        </option>
+      </select>
+
+      <label for="year">An</label>
+      <select id="year" formControlName="year" [disabled]="!years.length">
+        <option [ngValue]="null" disabled selected>Selectează an</option>
+        <option *ngFor="let year of years" [ngValue]="year">
+          {{ year }}
+        </option>
+      </select>
+
+      <label for="grade">Notă</label>
+      <input
+        id="grade"
+        type="number"
+        formControlName="grade"
+        min="1"
+        max="10"
+      />
+
+      <label for="delimiter">Delimitator (opțional)</label>
+      <input id="delimiter" type="number" formControlName="delimiter" />
+
+      <button type="submit" [disabled]="form.invalid">Calculează</button>
+    </form>
   </div>
 
-  <div class="form-group">
-    <label for="grade">Notă admitere</label>
-    <input
-      id="grade"
-      type="number"
-      formControlName="grade"
-      min="1"
-      max="10"
-      step="0.01"
-      placeholder="Introduceți nota"
-      class="form-input"
-    />
-  </div>
+  <div class="card-section">
+  <div class="card-section-wrapper">
+    <h3>Specializări posibile:</h3>
 
-  <div class="form-group">
-    <label for="delimiter">Delimitator egalități <span class="optional">(opțional)</span></label>
-    <input
-      id="delimiter"
-      type="text"
-      formControlName="delimiter"
-      placeholder=""
-      class="form-input"
-    />
-  </div>
+    <ng-container *ngIf="specializationGroups.length > 0; else noResults">
+      <div class="card-container">
+        <app-school-card
+          *ngFor="let spec of specializationGroups"
+          [specialization]="spec"
+        ></app-school-card>
+      </div>
+    </ng-container>
 
-  <button type="submit" class="submit-btn" [disabled]="form.invalid">Caută</button>
-</form>
+    <ng-template #noResults>
+      <p class="no-results">
+        Completează formularul pentru a vedea opțiunile disponibile.
+      </p>
+    </ng-template>
+  </div>
+</div>
+
+</div>
