@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HighschoolStats } from '../shared/model/highSchoolStats';
 import { HighSchoolCardComponent } from './high-school-card/high-school-card.component';
-import { baccalaureateService } from '../shared/service/Baccalaureate.service';
+import { baccalaureateService } from '../shared/service/baccalaureate.service';
 import { CountyAbbreviation } from '../shared/countyAbbreviation.enum';
 
 @Component({
@@ -50,8 +50,8 @@ export class HighSchoolStatsComponent {
       this.highschoolsArray = data;
       this.showHighschoolsArray = data;
 
-      // aici datele sunt gata
-      console.log(this.highschoolsArray);
+      const allProfiles = data.flatMap(hs => hs.profile);
+      this.availableProfiles = [...new Set(allProfiles)].sort();
     });
   }
 
@@ -64,8 +64,42 @@ export class HighSchoolStatsComponent {
     this.sortCriteria = sortType
   }
 
+
+  
+  ///filters area
+  onProfileCheckboxChange(event: Event, profile: string) {
+    const checked = (event.target as HTMLInputElement).checked;
+
+    if (checked) {
+      if (!this.filters.profil.includes(profile)) {
+        this.filters.profil.push(profile);
+      }
+    } else {
+      this.filters.profil = this.filters.profil.filter(p => p !== profile);
+    }
+  }
+
+
   applyFilters() {
-    this.showFilterModal = false
+    this.showHighschoolsArray = this.highschoolsArray.filter(hs => {
+      if (hs.averageGrade < this.filters.minMean) {
+        return false;
+      }
+
+      if (hs.passingPercentage < this.filters.minPromotionPercent) {
+        return false;
+      }
+
+      if (this.filters.profil.length > 0) {
+        const matchesProfile = hs.profile.some(p => this.filters.profil.includes(p));
+        if (!matchesProfile) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    this.showFilterModal = false;
   }
 
   showSort() {
@@ -77,6 +111,12 @@ export class HighSchoolStatsComponent {
   }
 
   resetFilters() {
-
+    this.filters = {
+      profil: [] as string[],
+      minMean: 0,
+      minPromotionPercent: 0
+    };
+    this.showHighschoolsArray = this.highschoolsArray
+    this.showFilterModal = false
   }
 }

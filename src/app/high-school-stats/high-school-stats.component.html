@@ -16,20 +16,20 @@
     </div>
     <div class="active-filters">
         @if(sortCriteria){
-             <span>Sortare: {{ sortCriteria }}</span>
+        <span>Sortare: {{ sortCriteria }}</span>
         }
         @if(filters.profil.length){
-             <span>Profiluri: {{ filters.profil.join(', ') }}</span>
+        <span>Profiluri: {{ filters.profil.join(', ') }}</span>
         }
 
         @if(filters.minMean)
         {
-              <span>Medie minimă: {{ filters.minMean }}</span>
+        <span>Medie minimă: {{ filters.minMean }}</span>
         }
 
         @if(filters.minPromotionPercent)
         {
-            <span>Promovabilitate minimă: {{ filters.minPromotionPercent }}%</span>
+        <span>Promovabilitate minimă: {{ filters.minPromotionPercent }}%</span>
         }
     </div>
     @if(showSortModal)
@@ -53,12 +53,16 @@
             <h3>Filtrare</h3>
 
             <label>Profil:</label>
-            <select multiple [(ngModel)]="filters.profil">
-                @for( p of availableProfiles; track $index)
+            <div class="profile-zone">
+             @for( p of availableProfiles; track $index)
                 {
-                     <option [value]="p">{{ p }}</option>
+                <label>
+                    <input type="checkbox" [value]="p" [checked]="filters.profil.includes(p)"
+                        (change)="onProfileCheckboxChange($event, p)" />
+                    {{ p }}
+                </label>
                 }
-            </select>
+            </div>
 
             <label>Medie minimă:</label>
             <input type="number" [(ngModel)]="filters.minMean" min="0" max="10" step="0.1" />
@@ -67,19 +71,21 @@
             <input type="number" [(ngModel)]="filters.minPromotionPercent" min="0" max="100" step="1" />
 
             <div class="modal-actions">
-                <button class="btn" (click)="applyFilters()">Aplică</button>
-                <button class="btn" (click)="resetFilters()">Reset</button>
-                <button class="btn" (click)="showFilterModal = false">Închide</button>
+                <button class="button" style="background-color: rgb(45, 107, 30);"
+                    (click)="applyFilters()">Aplică</button>
+                <button class="button" style="background-color: rgb(97, 22, 22);"
+                    (click)="resetFilters()">Reset</button>
+                <button class="button" (click)="showFilterModal = false">Închide</button>
             </div>
         </div>
     </div>
     }
 
     <div class="high-schools-list">
-       @for(s of  showHighschoolsArray; track $index)
-       {
-            <app-high-school-card [stats]="s"></app-high-school-card>
-       }
+        @for(s of showHighschoolsArray; track $index)
+        {
+        <app-high-school-card [stats]="s"></app-high-school-card>
+        }
     </div>
 
     }
