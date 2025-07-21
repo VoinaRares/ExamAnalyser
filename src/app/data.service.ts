@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { RawExaminee } from './raw-examinee.interface';
 import { SpecializationGroup } from './specialization-group.interface';
 
@@ -28,18 +28,25 @@ export class DataService {
     const groups: { [key: string]: SpecializationGroup } = {};
 
     for (const entry of data) {
-      const grade = parseFloat(entry.madm);
+      const grade = parseFloat(entry.madm.replace(',', '.'));
       if (isNaN(grade)) continue;
 
-      const key = `${entry.sc}|${entry.sp}|${entry.lm}`;
+      const highSchoolName = this.extractHighSchoolName(entry.h || '');
+      const specializationCode = this.extractSpecializationCode(entry.sp || '');
+      const specializationName = this.extractSpecializationName(entry.sp || '');
+      const language = this.extractLanguageFromSp(entry.sp || '');
+
+      if (!highSchoolName || !specializationCode) continue;
+
+      const key = `${highSchoolName}|${specializationCode}`;
 
       if (!groups[key]) {
         groups[key] = {
-          school: entry.s,
-          code: entry.sc,
+          school: highSchoolName,
+          code: specializationCode,
           county: entry.jp,
-          specialization: entry.sp,
-          language: entry.lm,
+          specialization: specializationName,
+          language: language,
           candidates: [entry],
           lowestAdmissionGrade: grade,
           highestAdmissionGrade: grade
@@ -58,14 +65,34 @@ export class DataService {
     return Object.values(groups);
   }
 
-  // --- Funcționalități BAC ---
+  private extractHighSchoolName(h: string): string {
+    const match = h.match(/<b>(.*?)<\/b>/);
+    return match ? match[1].trim() : '';
+  }
+
+  private extractSpecializationCode(sp: string): string {
+    const match = sp.match(/\((\d+)\)/);
+    return match ? match[1] : '';
+  }
+
+  private extractSpecializationName(sp: string): string {
+    const cleaned = this.cleanHtml(sp);
+    const parts = cleaned.split(/\s*[\n\r]*<br\/>\s*|\s*Limba\s+/i);
+    return parts[0]?.trim() ?? '';
+  }
+
+  private extractLanguageFromSp(sp: string): string {
+    const match = sp.split(/<br\/>/i)[1];
+    return match ? this.cleanHtml(match).trim() : '';
+  }
+
+  private cleanHtml(input: string): string {
+    return input.replace(/<\/?[^>]+(>|$)/g, '').replace(/\s+/g, ' ');
+  }
 
   loadBacData(): Observable<any[]> {
     if (this.bacData.length > 0) {
-      return new Observable(observer => {
-        observer.next(this.bacData);
-        observer.complete();
-      });
+      return of(this.bacData);
     }
 
     return this.http.get<any[][]>('assets/data/bac/2025.json').pipe(
@@ -111,7 +138,7 @@ export class DataService {
       '6–7': 0,
       '7–8': 0,
       '8–9': 0,
-      '9–10': 0,
+      '9–10': 0
     };
 
     filtered.forEach(d => {
