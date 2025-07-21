@@ -1,26 +1,30 @@
-<div>
-    <label for="liceu-select">Alege liceu:</label>
+<div class="container">
+  <div class="select-group">
+    <label class="select-label" for="liceu-select">Selectează unitatea de învățământ:</label>
     <select id="liceu-select" [(ngModel)]="selectedLiceu" (change)="onLiceuChange()">
       <option [ngValue]="undefined">-- Toate liceele --</option>
       <option *ngFor="let liceu of licee" [ngValue]="liceu">{{ liceu }}</option>
     </select>
   </div>
-  
-  <div>
-    <label for="specializare-select">Alege specializare:</label>
-    <select id="specializare-select" [(ngModel)]="selectedSpecializare" (change)="onSpecializareChange()">
+
+  <div class="select-group">
+    <label class="select-label" for="specializare-select">Selectează specializarea:</label>
+    <select
+      id="specializare-select"
+      [(ngModel)]="selectedSpecializare"
+      (change)="onSpecializareChange()"
+    >
       <option [ngValue]="undefined">-- Toate specializările --</option>
       <option *ngFor="let spec of specializari" [ngValue]="spec">{{ spec }}</option>
     </select>
   </div>
-  
-  <div style="max-width: 500px; margin-top: 20px;">
+
+  <div class="chart-wrapper">
     <canvas
       baseChart
       [data]="pieChartData"
       [type]="pieChartType"
       [options]="pieChartOptions"
-    >
-    </canvas>
+    ></canvas>
   </div>
-  
+</div>
