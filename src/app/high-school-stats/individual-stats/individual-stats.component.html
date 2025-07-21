@@ -1,0 +1,38 @@
+<div class="stats-modal">
+    <div class="stats-content">
+        <button class="close-btn" (click)="close()">✕</button>
+
+        <h2 class="highschool-name">{{ highschool()?.highschool }}</h2>
+
+        <!-- Secțiunea 1: Statistici generale pentru liceu -->
+        <div class="section">
+            <h3>Statistici generale liceu</h3>
+            <h4>Medie generală: {{mean}}</h4>
+            <div class="chart-box">[Distribuția mediilor generale]</div>
+            <div class="chart-box">[Distribuția notelor pe materii]</div>
+
+        </div>
+
+        <!-- Secțiunea 2: Statistici pe profil -->
+        <div class="section">
+            <h3>Statistici pe profil</h3>
+            <p class="subtitle">Selectează un profil pentru a vedea detalii specifice.</p>
+            <label for="profileSelect">Selectează profil:</label>
+            <select id="profileSelect" [(ngModel)]="selectedProfile" (change)="onProfileChange($event)">
+                @for (p of highschool()?.profile; track $index) {
+                    <option [value]="p">{{ p }}</option>
+                }
+            </select>
+
+            <!-- Zona dedicată profilului selectat -->
+            @if(selectedProfile)
+            {
+            <div class="profile-details">
+                <h4>Media elevilor acestui profil este: {{profileMean}}</h4>
+                <div class="chart-box">[Distributie medii pe profil: {{ selectedProfile }}]</div>
+                <div class="chart-box">[Distribuția notelor pe materii pentru: {{ selectedProfile }}]</div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
