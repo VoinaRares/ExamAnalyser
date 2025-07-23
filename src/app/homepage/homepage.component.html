@@ -13,7 +13,7 @@
         <h2>Cu ce te putem ajuta?</h2>
       </div>
       <div class="bottom">
-        <div class="feature-card" (click)="goToStats()">
+        <div class="feature-card" [routerLink]="['/bac-chart']" style="text-decoration: none; cursor: pointer;">
           <h3 class="feature-title">Statistici BAC</h3>
           <p class="feature-description">
             Statisticile liceelor privitoare la promovabilitate și medie BAC (pentru anul 2025)

@@ -14,6 +14,6 @@ export class HomepageComponent {
 
   goToStats()
   {
-    this.router.navigate(['statistici-licee']);
+    this.router.navigate(['/bac-chart']);
   }
 }
