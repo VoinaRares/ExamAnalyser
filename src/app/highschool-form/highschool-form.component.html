@@ -4,16 +4,15 @@
       <h2>Admitere Liceu</h2>
 
       <label for="county">Județ</label>
-      <select id="county" formControlName="county">
-        <option [ngValue]="null" disabled selected>Selectează județ</option>
-        <option *ngFor="let county of counties" [ngValue]="county.value">
-          {{ county.label }}
+      <select formControlName="county">
+        <option *ngFor="let c of counties" [value]="c.value">
+          {{ c.label }}
         </option>
       </select>
 
       <label for="year">An</label>
       <select id="year" formControlName="year" [disabled]="!years.length">
-        <option [ngValue]="null" disabled selected>Selectează an</option>
+        <option [ngValue]="null" disabled selected>Selectează anul</option>
         <option *ngFor="let year of years" [ngValue]="year">
           {{ year }}
         </option>
@@ -36,24 +35,23 @@
   </div>
 
   <div class="card-section">
-  <div class="card-section-wrapper">
-    <h3>Specializări posibile:</h3>
+    <div class="card-section-wrapper">
+      <h3>Specializări posibile:</h3>
 
-    <ng-container *ngIf="specializationGroups.length > 0; else noResults">
-      <div class="card-container">
-        <app-school-card
-          *ngFor="let spec of specializationGroups"
-          [specialization]="spec"
-        ></app-school-card>
-      </div>
-    </ng-container>
+      <ng-container *ngIf="specializationGroups.length > 0; else noResults">
+        <div class="card-container">
+          <app-school-card
+            *ngFor="let spec of specializationGroups"
+            [specialization]="spec"
+          ></app-school-card>
+        </div>
+      </ng-container>
 
-    <ng-template #noResults>
-      <p class="no-results">
-        Completează formularul pentru a vedea opțiunile disponibile.
-      </p>
-    </ng-template>
+      <ng-template #noResults>
+        <p class="no-results">
+          Completează formularul pentru a vedea opțiunile disponibile.
+        </p>
+      </ng-template>
+    </div>
   </div>
-</div>
-
 </div>

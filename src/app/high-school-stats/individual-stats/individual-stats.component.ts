@@ -38,7 +38,7 @@ export class IndividualStatsComponent {
     const countyCode = CountyAbbreviation[this.county()! as keyof typeof CountyAbbreviation]
 
     //in profileData e dictionar cu chei numele materiei si valoare un array de note
-    const profileData = this.bacService.getGradesOnProfileForHighschool(countyCode, this.highschool()!.highschool, selectedProfile)
+    //const profileData = this.bacService.getGradesOnProfileForHighschool(countyCode, this.highschool()!.highschool, selectedProfile)
     const rawData = this.bacService.getRawStructure();
 
     const profileRows = rawData[countyCode][this.highschool()!.highschool]?.[selectedProfile];

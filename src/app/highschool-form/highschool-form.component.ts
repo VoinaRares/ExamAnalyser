@@ -30,9 +30,7 @@ export class HighschoolFormComponent implements OnInit {
     delimiter: FormControl<number | null>;
   }>;
 
-  counties = [
-    { label: 'Brașov', value: 'brasov' },
-  ];
+  counties: { label: string; value: string }[] = [];
 
   years: number[] = [];
   specializationGroups: SpecializationGroup[] = [];
@@ -47,6 +45,10 @@ export class HighschoolFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.dataService.getCounties().subscribe(counties => {
+      this.counties = counties;
+    });
+
     this.form.get('county')?.valueChanges.subscribe((county) => {
       if (county) {
         this.dataService.getAvailableYears(county).subscribe((years: number[]) => {
