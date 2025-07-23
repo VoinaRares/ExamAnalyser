@@ -7,10 +7,11 @@ import { HighschoolStats } from '../shared/model/highSchoolStats';
 import { HighSchoolCardComponent } from './high-school-card/high-school-card.component';
 import { baccalaureateService } from '../shared/service/baccalaureate.service';
 import { CountyAbbreviation } from '../shared/countyAbbreviation.enum';
+import { IndividualStatsComponent } from './individual-stats/individual-stats.component';
 
 @Component({
   selector: 'app-high-school-stats',
-  imports: [CountySelectorComponent, FormsModule, HighSchoolCardComponent],
+  imports: [CountySelectorComponent, FormsModule, HighSchoolCardComponent, IndividualStatsComponent],
   templateUrl: './high-school-stats.component.html',
   styleUrl: './high-school-stats.component.scss'
 })
@@ -23,6 +24,7 @@ export class HighSchoolStatsComponent {
 
   showFilterModal = false;
   showSortModal = false;
+  showStatsModal = false;
 
 
   filters = {
@@ -38,8 +40,9 @@ export class HighSchoolStatsComponent {
 
   showHighschoolsArray: HighschoolStats[] = [] //here will be highschools in right order respecting the filters
 
+  selectedHighschool: HighschoolStats | null = null;
 
-  ngOnInit(): void {
+  ngOnInit() {
     const countyParam = this.route.snapshot.paramMap.get('county');
     if (countyParam && Object.values(County).includes(countyParam as County)) {
       this.selectedCounty = countyParam as County;
@@ -65,7 +68,7 @@ export class HighSchoolStatsComponent {
   }
 
 
-  
+
   ///filters area
   onProfileCheckboxChange(event: Event, profile: string) {
     const checked = (event.target as HTMLInputElement).checked;
@@ -118,5 +121,15 @@ export class HighSchoolStatsComponent {
     };
     this.showHighschoolsArray = this.highschoolsArray
     this.showFilterModal = false
+  }
+
+  openStatsModal(hs: HighschoolStats) {
+    this.selectedHighschool = hs;
+    this.showStatsModal = true;
+  }
+
+  closeStatsModal() {
+    this.selectedHighschool = null;
+    this.showStatsModal = false;
   }
 }

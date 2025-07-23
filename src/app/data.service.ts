@@ -10,8 +10,16 @@ export class DataService {
 
   constructor(private http: HttpClient) {}
 
+  getCounties(): Observable<{ label: string; value: string }[]> {
+    return this.http
+      .get<any[]>('assets/data/evaluare/counties.json')
+      .pipe(
+        map((counties) => counties.map((c) => ({ label: c.name, value: c.id })))
+      );
+  }
+
   getAvailableYears(county: string): Observable<number[]> {
-    return this.http.get<number[]>(`/assets/data/evaluare/${county}/years.json`);
+    return this.http.get<number[]>(`assets/data/evaluare/${county}/years.json`);
   }
 
   getExamDataForYear(county: string, year: number): Observable<RawExaminee[]> {
@@ -20,8 +28,24 @@ export class DataService {
 
   getGroupedSchools(county: string, year: number): Observable<SpecializationGroup[]> {
     return this.getExamDataForYear(county, year).pipe(
-      map(data => this.groupBySpecialization(data))
+      map((data) => {
+        const rankedData = this.addCountyRanking(data);
+        return this.groupBySpecialization(rankedData);
+      })
     );
+  }
+
+  private addCountyRanking(data: RawExaminee[]): RawExaminee[] {
+    const sorted = [...data].sort((a, b) => {
+      const aGrade = parseFloat(a.madm.replace(',', '.'));
+      const bGrade = parseFloat(b.madm.replace(',', '.'));
+      return bGrade - aGrade;
+    });
+
+    return sorted.map((candidate, index) => ({
+      ...candidate,
+      rank: index + 1,
+    }));
   }
 
   private groupBySpecialization(data: RawExaminee[]): SpecializationGroup[] {
@@ -49,20 +73,39 @@ export class DataService {
           language: language,
           candidates: [entry],
           lowestAdmissionGrade: grade,
-          highestAdmissionGrade: grade
+          highestAdmissionGrade: grade,
+          firstCandidate: entry,
+          lastCandidate: entry,
         };
       } else {
         groups[key].candidates.push(entry);
-        if (grade < groups[key].lowestAdmissionGrade) {
-          groups[key].lowestAdmissionGrade = grade;
-        }
+
         if (grade > groups[key].highestAdmissionGrade) {
           groups[key].highestAdmissionGrade = grade;
+          groups[key].firstCandidate = entry;
+        }
+
+        if (grade < groups[key].lowestAdmissionGrade) {
+          groups[key].lowestAdmissionGrade = grade;
+          groups[key].lastCandidate = entry;
         }
       }
     }
 
-    return Object.values(groups);
+    return Object.values(groups).map((group) => ({
+      ...group,
+      positionRange: this.calculatePositionRange(group),
+    }));
+  }
+
+  private calculatePositionRange(group: SpecializationGroup): string {
+    if (!group.candidates.length) return '';
+
+    const ranks = group.candidates.map((c) => c.rank || 0);
+    const minRank = Math.min(...ranks);
+    const maxRank = Math.max(...ranks);
+
+    return `${minRank} - ${maxRank}`;
   }
 
   private extractHighSchoolName(h: string): string {
@@ -77,12 +120,12 @@ export class DataService {
 
   private extractSpecializationName(sp: string): string {
     const cleaned = this.cleanHtml(sp);
-    const parts = cleaned.split(/\s*[\n\r]*<br\/>\s*|\s*Limba\s+/i);
+    const parts = cleaned.split(/\s*[\n\r]*<br\/?>\s*|\s*Limba\s+/i);
     return parts[0]?.trim() ?? '';
   }
 
   private extractLanguageFromSp(sp: string): string {
-    const match = sp.split(/<br\/>/i)[1];
+    const match = sp.split(/<br\/?>/i)[1];
     return match ? this.cleanHtml(match).trim() : '';
   }
 

@@ -1,8 +1,33 @@
 <p-card [header]="specialization.school">
   <div class="p-text-secondary">
-    <div><strong>Specializare:</strong> <span [innerHTML]="specialization.specialization"></span></div>
-    <div><strong>Limba:</strong> {{ specialization.language }}</div>
-    <div><strong>Prima medie:</strong> {{ specialization.highestAdmissionGrade.toFixed(2) }}</div>
-    <div><strong>Ultima medie:</strong> {{ specialization.lowestAdmissionGrade.toFixed(2) }}</div>
+    <div class="mb-2">
+      <strong>Specializare:</strong>
+      <span [innerHTML]="specialization.specialization"></span>
+    </div>
+
+    <div class="mb-2">
+      <strong>Limba:</strong> {{ specialization.language }}
+    </div>
+
+    <div class="mb-2" *ngIf="specialization.firstCandidate">
+      <strong>Prima medie de intrare:</strong>
+      {{ specialization.highestAdmissionGrade.toFixed(2) }}
+      (abs. {{ formatGrade(specialization.firstCandidate.mabs) }}) - poziția
+      {{ specialization.firstCandidate.rank }}, ID:
+      {{ specialization.firstCandidate.n }}
+    </div>
+
+    <div class="mb-2" *ngIf="specialization.lastCandidate">
+      <strong>Ultima medie de intrare:</strong>
+      {{ specialization.lowestAdmissionGrade.toFixed(2) }}
+      (abs. {{ formatGrade(specialization.lastCandidate.mabs) }}) - poziția
+      {{ specialization.lastCandidate.rank }}, ID:
+      {{ specialization.lastCandidate.n }}
+    </div>
+
+    <div class="mb-2" *ngIf="specialization.positionRange">
+      <strong>Poziții în clasament:</strong>
+      {{ specialization.positionRange }}
+    </div>
   </div>
 </p-card>

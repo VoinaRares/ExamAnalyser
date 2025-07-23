@@ -54,7 +54,7 @@
 
             <label>Profil:</label>
             <div class="profile-zone">
-             @for( p of availableProfiles; track $index)
+                @for( p of availableProfiles; track $index)
                 {
                 <label>
                     <input type="checkbox" [value]="p" [checked]="filters.profil.includes(p)"
@@ -84,9 +84,14 @@
     <div class="high-schools-list">
         @for(s of showHighschoolsArray; track $index)
         {
-        <app-high-school-card [stats]="s"></app-high-school-card>
+        <app-high-school-card [stats]="s"  (click)="openStatsModal(s)"></app-high-school-card>
         }
     </div>
 
+    }
+
+    @if(showStatsModal && selectedHighschool) {
+    <app-individual-stats [highschool]="selectedHighschool" [county]="selectedCounty" (closeModal)="closeStatsModal()">
+    </app-individual-stats>
     }
 </div>

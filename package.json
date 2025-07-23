@@ -2,6 +2,8 @@
   "name": "exam-analyser",
   "version": "0.0.0",
   "scripts": {
+    "prebuild": "node generate-counties.js",
+    "prestart": "node generate-counties.js",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",

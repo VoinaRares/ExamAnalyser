@@ -4,9 +4,12 @@ export interface SpecializationGroup {
   school: string;
   code: string;
   county: string;
-  specialization: string; // `sp`
-  language: string;       // `lm`
+  specialization: string;
+  language: string;
   candidates: RawExaminee[];
-  lowestAdmissionGrade: number;
   highestAdmissionGrade: number;
+  lowestAdmissionGrade: number;
+  firstCandidate?: RawExaminee;
+  lastCandidate?: RawExaminee;
+  positionRange?: string;
 }
