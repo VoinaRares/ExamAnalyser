@@ -34,7 +34,7 @@ export class HighSchoolStatsComponent {
   };
   availableProfiles = ['Matematică-Informatică', 'Științe ale Naturii', 'Uman', 'Tehnologic', 'Vocational'];
 
-  sortCriteria = 'BAC'
+  sortCriteria = ''
 
   highschoolsArray: HighschoolStats[] = []
 
@@ -42,7 +42,7 @@ export class HighSchoolStatsComponent {
 
   selectedHighschool: HighschoolStats | null = null;
 
-  ngOnInit() {
+  /*ngOnInit() {
     const countyParam = this.route.snapshot.paramMap.get('county');
     if (countyParam && Object.values(County).includes(countyParam as County)) {
       this.selectedCounty = countyParam as County;
@@ -56,17 +56,57 @@ export class HighSchoolStatsComponent {
       const allProfiles = data.flatMap(hs => hs.profile);
       this.availableProfiles = [...new Set(allProfiles)].sort();
     });
-  }
+  }*/
 
   onCountySelected(county: string) {
+    //console.log("I am here first time")
     this.selectedCounty = county as County;
-    this.router.navigate([this.router.url, county]);
+    this.router.navigate(['/statistici-licee', county]);
+
+    const abbreviation = CountyAbbreviation[this.selectedCounty as keyof typeof CountyAbbreviation];
+    this.highschoolService.getStatsByCounty(abbreviation).subscribe((data) => {
+      this.highschoolsArray = data;
+      console.log(this.highschoolsArray)
+      this.showHighschoolsArray = data;
+
+      const allProfiles = data.flatMap(hs => hs.profile);
+      this.availableProfiles = [...new Set(allProfiles)].sort();
+    });
   }
 
   applySort(sortType: string) {
-    this.sortCriteria = sortType
-  }
+    this.sortCriteria = sortType;
 
+    switch (sortType) {
+      case 'medie bac crescător':
+        this.showHighschoolsArray.sort((a, b) => a.averageGrade - b.averageGrade);
+        break;
+
+      case 'medie bac descrescător':
+        this.showHighschoolsArray.sort((a, b) => b.averageGrade - a.averageGrade);
+        break;
+
+      case 'rata promovabilitate crescător':
+        this.showHighschoolsArray.sort((a, b) => a.passingPercentage - b.passingPercentage);
+        break;
+
+      case 'rata promovabilitate descrescător':
+        this.showHighschoolsArray.sort((a, b) => b.passingPercentage - a.passingPercentage);
+        break;
+
+      case 'alfabetic crescător':
+        this.showHighschoolsArray.sort((a, b) => a.highschool.localeCompare(b.highschool));
+        break;
+
+      case 'alfabetic descrescător':
+        this.showHighschoolsArray.sort((a, b) => b.highschool.localeCompare(a.highschool));
+        break;
+      default:
+        break;
+    }
+
+    this.showSortModal = false;
+  }
 
 
   ///filters area

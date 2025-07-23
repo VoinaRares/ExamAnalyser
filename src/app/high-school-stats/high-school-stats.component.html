@@ -37,12 +37,17 @@
     <div class="modal">
         <div class="modal-content">
             <h3>Sortare</h3>
-            <label><input type="radio" name="sort" value="bac-asc" (change)="applySort('bac-asc')"> BAC ↑</label>
-            <label><input type="radio" name="sort" value="bac-desc" (change)="applySort('bac-desc')"> BAC ↓</label>
-            <label><input type="radio" name="sort" value="prom-asc" (change)="applySort('prom-asc')"> Promovabilitate
+            <label><input type="radio" name="sort" value="bac-asc" (change)="applySort('medie bac crescător')"> Medie BAC ↑</label>
+            <label><input type="radio" name="sort" value="bac-desc" (change)="applySort('medie bac descrescător')"> Medie BAC ↓</label>
+            <label><input type="radio" name="sort" value="prom-asc" (change)="applySort('rata promovabilitate crescător')"> Promovabilitate
                 ↑</label>
-            <label><input type="radio" name="sort" value="prom-desc" (change)="applySort('prom-desc')"> Promovabilitate
+            <label><input type="radio" name="sort" value="prom-desc" (change)="applySort('rata promovabilitate descrescător')"> Promovabilitate
                 ↓</label>
+            <label><input type="radio" name="sort" value="alpha-asc" (change)="applySort('alfabetic crescător')"> Alfabetic
+                ↑</label>
+            <label><input type="radio" name="sort" value="alpha-desc" (change)="applySort('alfabetic descrescător')"> Alfabetic
+                ↓</label>
+
             <button class="btn" (click)="showSortModal = false">Închide</button>
         </div>
     </div>
@@ -84,7 +89,7 @@
     <div class="high-schools-list">
         @for(s of showHighschoolsArray; track $index)
         {
-        <app-high-school-card [stats]="s"  (click)="openStatsModal(s)"></app-high-school-card>
+        <app-high-school-card [stats]="s" (click)="openStatsModal(s)"></app-high-school-card>
         }
     </div>
 
