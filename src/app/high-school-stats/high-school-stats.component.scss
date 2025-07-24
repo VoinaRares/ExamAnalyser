@@ -159,7 +159,7 @@ $card-bg: rgb(108, 150, 218);
   background-color: #4c5a67;
 }
 
-.profile-zone{
+.profile-zone {
   max-height: 15vh;
   overflow-y: auto;
   display: flex;
@@ -167,4 +167,28 @@ $card-bg: rgb(108, 150, 218);
   display: grid;
   grid-template-columns: repeat(3, 1fr); // 3 coloane egale
   gap: 0.5rem;
+}
+
+.home-button {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: #79999f;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.3s ease;
+
+  i {
+    pointer-events: none;
+  }
+
+  &:hover {
+    background-color: #5a5a5a;
+  }
 }

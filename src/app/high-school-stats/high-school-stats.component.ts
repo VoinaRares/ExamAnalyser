@@ -42,7 +42,7 @@ export class HighSchoolStatsComponent {
 
   selectedHighschool: HighschoolStats | null = null;
 
-  /*ngOnInit() {
+  ngOnInit() {
     const countyParam = this.route.snapshot.paramMap.get('county');
     if (countyParam && Object.values(County).includes(countyParam as County)) {
       this.selectedCounty = countyParam as County;
@@ -56,7 +56,7 @@ export class HighSchoolStatsComponent {
       const allProfiles = data.flatMap(hs => hs.profile);
       this.availableProfiles = [...new Set(allProfiles)].sort();
     });
-  }*/
+  }
 
   onCountySelected(county: string) {
     //console.log("I am here first time")
@@ -171,5 +171,10 @@ export class HighSchoolStatsComponent {
   closeStatsModal() {
     this.selectedHighschool = null;
     this.showStatsModal = false;
+  }
+
+  navigateHome()
+  {
+    this.router.navigate(["/"])
   }
 }

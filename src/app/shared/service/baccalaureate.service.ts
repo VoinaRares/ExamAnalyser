@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { HighschoolStats } from '../model/highSchoolStats';
 
 @Injectable({ providedIn: 'root' })
 export class baccalaureateService {
   http = inject(HttpClient);
+
+  private dataInitialized = false;
 
   private fullDataStructure: {
     [county: string]: {
@@ -26,7 +27,16 @@ export class baccalaureateService {
     };
   } = {};
 
+  private cachedStatsByCounty: {
+    [county: string]: HighschoolStats[];
+  } = {};
+
   getStatsByCounty(countyAbbreviation: string): Observable<HighschoolStats[]> {
+    // Dacă datele au fost deja procesate, returnăm direct
+    if (this.dataInitialized) {
+      return of(this.cachedStatsByCounty[countyAbbreviation] || []);
+    }
+
     const url = 'assets/data/bac/2025.json';
 
     return this.http.get<any[][]>(url).pipe(
@@ -46,105 +56,95 @@ export class baccalaureateService {
           optionalSubject: getIndex('Disciplina alegere'),
         };
 
-        const filtered = rows.filter(row =>
-          row[idx.candidateCode]?.startsWith(countyAbbreviation)
-        );
+        for (const row of rows) {
+          const candidateCode = row[idx.candidateCode];
+          const countyCode = candidateCode?.substring(0, 2);
+          if (!countyCode) continue;
 
-        const grouped: Record<string, {
-          grades: number[];
-          passed: number;
-          profiles: Set<string>;
-        }> = {};
-
-        if (!this.fullDataStructure[countyAbbreviation]) {
-          this.fullDataStructure[countyAbbreviation] = {};
-        }
-
-        if (!this.gradesOnProfile[countyAbbreviation]) {
-          this.gradesOnProfile[countyAbbreviation] = {};
-        }
-
-        for (const row of filtered) {
           const schoolName = row[idx.school];
+          const profile = row[idx.profile];
+
           const avg = parseFloat(row[idx.average]);
           const rom = parseFloat(row[idx.romanian]);
           const mandatory = parseFloat(row[idx.mandatory]);
           const optional = parseFloat(row[idx.optional]);
-          const profile = row[idx.profile];
           const mandatorySubj = row[idx.mandatorySubject];
           const optionalSubj = row[idx.optionalSubject];
- 
-          if (!this.fullDataStructure[countyAbbreviation][schoolName]) {
-            this.fullDataStructure[countyAbbreviation][schoolName] = {};
-          }
-          if (!this.fullDataStructure[countyAbbreviation][schoolName][profile]) {
-            this.fullDataStructure[countyAbbreviation][schoolName][profile] = [];
-          }
-          this.fullDataStructure[countyAbbreviation][schoolName][profile].push(row);
 
-          if (!this.gradesOnProfile[countyAbbreviation][schoolName]) {
-            this.gradesOnProfile[countyAbbreviation][schoolName] = {};
-          }
-          if (!this.gradesOnProfile[countyAbbreviation][schoolName][profile]) {
-            this.gradesOnProfile[countyAbbreviation][schoolName][profile] = {};
-          }
+          // === Full structure ===
+          this.fullDataStructure[countyCode] ??= {};
+          this.fullDataStructure[countyCode][schoolName] ??= {};
+          this.fullDataStructure[countyCode][schoolName][profile] ??= [];
+          this.fullDataStructure[countyCode][schoolName][profile].push(row);
 
-          // Adăugare notă română
-          if (!this.gradesOnProfile[countyAbbreviation][schoolName][profile]['Limba și literatura română']) {
-            this.gradesOnProfile[countyAbbreviation][schoolName][profile]['Limba și literatura română'] = [];
-          }
+          // === Grades on profile ===
+          this.gradesOnProfile[countyCode] ??= {};
+          this.gradesOnProfile[countyCode][schoolName] ??= {};
+          this.gradesOnProfile[countyCode][schoolName][profile] ??= {};
+
+          // Română
+          const romKey = 'Limba și literatura română';
+          this.gradesOnProfile[countyCode][schoolName][profile][romKey] ??= [];
           if (!isNaN(rom)) {
-            this.gradesOnProfile[countyAbbreviation][schoolName][profile]['Limba și literatura română'].push(rom);
+            this.gradesOnProfile[countyCode][schoolName][profile][romKey].push(rom);
           }
 
-          // Adăugare notă disciplină obligatorie
-          if (mandatorySubj && !this.gradesOnProfile[countyAbbreviation][schoolName][profile][mandatorySubj]) {
-            this.gradesOnProfile[countyAbbreviation][schoolName][profile][mandatorySubj] = [];
-          }
-          if (!isNaN(mandatory)) {
-            this.gradesOnProfile[countyAbbreviation][schoolName][profile][mandatorySubj]?.push(mandatory);
-          }
-
-          // Adăugare notă disciplină alegere
-          if (optionalSubj && !this.gradesOnProfile[countyAbbreviation][schoolName][profile][optionalSubj]) {
-            this.gradesOnProfile[countyAbbreviation][schoolName][profile][optionalSubj] = [];
-          }
-          if (!isNaN(optional)) {
-            this.gradesOnProfile[countyAbbreviation][schoolName][profile][optionalSubj]?.push(optional);
+          // Mandatory subject
+          if (mandatorySubj) {
+            this.gradesOnProfile[countyCode][schoolName][profile][mandatorySubj] ??= [];
+            if (!isNaN(mandatory)) {
+              this.gradesOnProfile[countyCode][schoolName][profile][mandatorySubj].push(mandatory);
+            }
           }
 
-          if (!grouped[schoolName]) {
-            grouped[schoolName] = { grades: [], passed: 0, profiles: new Set() };
+          // Optional subject
+          if (optionalSubj) {
+            this.gradesOnProfile[countyCode][schoolName][profile][optionalSubj] ??= [];
+            if (!isNaN(optional)) {
+              this.gradesOnProfile[countyCode][schoolName][profile][optionalSubj].push(optional);
+            }
           }
 
-          if (!isNaN(avg)) {
-            grouped[schoolName].grades.push(avg);
-          }
-
-          grouped[schoolName].profiles.add(profile);
-
+          // === Cached stats ===
           const validGrades = [rom, mandatory, optional];
           const isValid = validGrades.every(g => !isNaN(g));
           const isPass = avg >= 6 && validGrades.every(g => g >= 5);
 
-          if (isValid && isPass) {
-            grouped[schoolName].passed += 1;
+          const countyStats = this.cachedStatsByCounty[countyCode] ??= [];
+          const schoolStats = countyStats.find(s => s.highschool === schoolName);
+
+          if (schoolStats) {
+            if (!isNaN(avg)) schoolStats.averageGrade += avg;
+            if (isValid && isPass) schoolStats.passingPercentage += 1;
+            schoolStats.totalCandidates += 1;
+            schoolStats.profile.push(profile);
+          } else {
+            countyStats.push({
+              highschool: schoolName,
+              averageGrade: !isNaN(avg) ? avg : 0,
+              passingPercentage: isValid && isPass ? 1 : 0,
+              totalCandidates: 1,
+              profile: [profile],
+            });
           }
         }
 
-        return Object.entries(grouped).map(([school, stats]) => {
-          const total = stats.grades.length;
-          const averageGrade = total ? stats.grades.reduce((a, b) => a + b, 0) / total : 0;
-          const passingPercentage = total ? (stats.passed / total) * 100 : 0;
+        // Post-procesare: facem medii și procente
+        for (const county in this.cachedStatsByCounty) {
+          this.cachedStatsByCounty[county] = this.cachedStatsByCounty[county].map(stat => {
+            const avg = stat.totalCandidates ? stat.averageGrade / stat.totalCandidates : 0;
+            const pass = stat.totalCandidates ? (stat.passingPercentage / stat.totalCandidates) * 100 : 0;
+            return {
+              ...stat,
+              averageGrade: parseFloat(avg.toFixed(2)),
+              passingPercentage: parseFloat(pass.toFixed(2)),
+              profile: Array.from(new Set(stat.profile)),
+            };
+          });
+        }
 
-          return {
-            highschool: school,
-            averageGrade: parseFloat(averageGrade.toFixed(2)),
-            passingPercentage: parseFloat(passingPercentage.toFixed(2)),
-            totalCandidates: total,
-            profile: Array.from(stats.profiles),
-          };
-        });
+        this.dataInitialized = true;
+        return this.cachedStatsByCounty[countyAbbreviation] || [];
       })
     );
   }

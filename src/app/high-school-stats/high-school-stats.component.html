@@ -37,15 +37,21 @@
     <div class="modal">
         <div class="modal-content">
             <h3>Sortare</h3>
-            <label><input type="radio" name="sort" value="bac-asc" (change)="applySort('medie bac crescător')"> Medie BAC ↑</label>
-            <label><input type="radio" name="sort" value="bac-desc" (change)="applySort('medie bac descrescător')"> Medie BAC ↓</label>
-            <label><input type="radio" name="sort" value="prom-asc" (change)="applySort('rata promovabilitate crescător')"> Promovabilitate
+            <label><input type="radio" name="sort" value="bac-asc" (change)="applySort('medie bac crescător')"> Medie
+                BAC ↑</label>
+            <label><input type="radio" name="sort" value="bac-desc" (change)="applySort('medie bac descrescător')">
+                Medie BAC ↓</label>
+            <label><input type="radio" name="sort" value="prom-asc"
+                    (change)="applySort('rata promovabilitate crescător')"> Promovabilitate
                 ↑</label>
-            <label><input type="radio" name="sort" value="prom-desc" (change)="applySort('rata promovabilitate descrescător')"> Promovabilitate
+            <label><input type="radio" name="sort" value="prom-desc"
+                    (change)="applySort('rata promovabilitate descrescător')"> Promovabilitate
                 ↓</label>
-            <label><input type="radio" name="sort" value="alpha-asc" (change)="applySort('alfabetic crescător')"> Alfabetic
+            <label><input type="radio" name="sort" value="alpha-asc" (change)="applySort('alfabetic crescător')">
+                Alfabetic
                 ↑</label>
-            <label><input type="radio" name="sort" value="alpha-desc" (change)="applySort('alfabetic descrescător')"> Alfabetic
+            <label><input type="radio" name="sort" value="alpha-desc" (change)="applySort('alfabetic descrescător')">
+                Alfabetic
                 ↓</label>
 
             <button class="btn" (click)="showSortModal = false">Închide</button>
@@ -92,11 +98,14 @@
         <app-high-school-card [stats]="s" (click)="openStatsModal(s)"></app-high-school-card>
         }
     </div>
-
+    <button class="home-button" (click)="navigateHome()">
+        <i class="fa fa-home"></i>
+    </button>
     }
 
     @if(showStatsModal && selectedHighschool) {
     <app-individual-stats [highschool]="selectedHighschool" [county]="selectedCounty" (closeModal)="closeStatsModal()">
     </app-individual-stats>
     }
+
 </div>

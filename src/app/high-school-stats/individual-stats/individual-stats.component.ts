@@ -53,7 +53,7 @@ export class IndividualStatsComponent {
     let count = 0;
 
     for (const row of profileRows) {
-      const media = parseFloat(row[16]); // "Media" e pe coloana 16
+      const media = parseFloat(row[19]); // "Media" e pe coloana 19
       if (!isNaN(media)) {
         mediaSum += media;
         count++;
