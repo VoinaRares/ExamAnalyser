@@ -107,5 +107,8 @@
     <app-individual-stats [highschool]="selectedHighschool" [county]="selectedCounty" (closeModal)="closeStatsModal()">
     </app-individual-stats>
     }
-
+    @if(showLoader)
+    {
+        <app-loader></app-loader>
+    }
 </div>

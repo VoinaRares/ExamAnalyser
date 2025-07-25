@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CountySelectorComponent } from '../shared/components/county-selector/county-selector.component'
+import { CountySelectorComponent } from './county-selector/county-selector.component'
 import { County } from '../shared/county.enum';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -8,10 +8,11 @@ import { HighSchoolCardComponent } from './high-school-card/high-school-card.com
 import { baccalaureateService } from '../shared/service/baccalaureate.service';
 import { CountyAbbreviation } from '../shared/countyAbbreviation.enum';
 import { IndividualStatsComponent } from './individual-stats/individual-stats.component';
+import { LoaderComponent } from '../shared/components/loader/loader.component';
 
 @Component({
   selector: 'app-high-school-stats',
-  imports: [CountySelectorComponent, FormsModule, HighSchoolCardComponent, IndividualStatsComponent],
+  imports: [CountySelectorComponent, FormsModule, HighSchoolCardComponent, IndividualStatsComponent, LoaderComponent],
   templateUrl: './high-school-stats.component.html',
   styleUrl: './high-school-stats.component.scss'
 })
@@ -25,7 +26,7 @@ export class HighSchoolStatsComponent {
   showFilterModal = false;
   showSortModal = false;
   showStatsModal = false;
-
+  showLoader = false;
 
   filters = {
     profil: [] as string[],
@@ -45,21 +46,22 @@ export class HighSchoolStatsComponent {
   ngOnInit() {
     const countyParam = this.route.snapshot.paramMap.get('county');
     if (countyParam && Object.values(County).includes(countyParam as County)) {
+      this.showLoader = true
       this.selectedCounty = countyParam as County;
+      const abbreviation = CountyAbbreviation[countyParam as keyof typeof CountyAbbreviation];
+      this.highschoolService.getStatsByCounty(abbreviation).subscribe((data) => {
+        this.highschoolsArray = data;
+        this.showHighschoolsArray = data;
+
+        const allProfiles = data.flatMap(hs => hs.profile);
+        this.availableProfiles = [...new Set(allProfiles)].sort();
+        this.showLoader = false
+      });
     }
-    const abbreviation = CountyAbbreviation[countyParam as keyof typeof CountyAbbreviation];
-
-    this.highschoolService.getStatsByCounty(abbreviation).subscribe((data) => {
-      this.highschoolsArray = data;
-      this.showHighschoolsArray = data;
-
-      const allProfiles = data.flatMap(hs => hs.profile);
-      this.availableProfiles = [...new Set(allProfiles)].sort();
-    });
   }
 
   onCountySelected(county: string) {
-    //console.log("I am here first time")
+    this.showLoader = true
     this.selectedCounty = county as County;
     this.router.navigate(['/statistici-licee', county]);
 
@@ -71,6 +73,7 @@ export class HighSchoolStatsComponent {
 
       const allProfiles = data.flatMap(hs => hs.profile);
       this.availableProfiles = [...new Set(allProfiles)].sort();
+      this.showLoader = false
     });
   }
 
@@ -173,8 +176,7 @@ export class HighSchoolStatsComponent {
     this.showStatsModal = false;
   }
 
-  navigateHome()
-  {
+  navigateHome() {
     this.router.navigate(["/"])
   }
 }

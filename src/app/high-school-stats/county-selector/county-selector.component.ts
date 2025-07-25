@@ -1,7 +1,7 @@
 import { Component, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { County } from '../../county.enum';
+import { County } from '../../shared/county.enum';
 
 @Component({
   selector: 'app-county-selector',
