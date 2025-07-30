@@ -9,28 +9,52 @@
             <span class="county-name">Județul: {{ selectedCounty }}</span>
             <button class="btn" (click)="selectedCounty = ''">Schimbă județul</button>
         </div>
+        <div class="filter-area">
+            @if(filters.profil.length){
+
+            <div class="filter-box">
+                <div class="text-area" (click)="showPartOfFilter('profiles')">
+                    <span>Profiluri: {{ filters.profil.length }}</span>
+                </div>
+                <div class="close-area">
+                    <div class="close-button" (click)="removeFilter('profiles')">×</div>
+                </div>
+            </div>
+            }
+
+            @if(filters.minMean)
+            {
+            <div class="filter-box">
+                <div class="text-area" (click)="showPartOfFilter('mean')">
+                    <span>Medie minimă: {{ filters.minMean }}</span>
+                </div>
+                <div class="close-area">
+                    <div class="close-button" (click)="removeFilter('min-mean')">×</div>
+                </div>
+            </div>
+            }
+
+            @if(filters.minPromotionPercent)
+            {
+            <div class="filter-box">
+                <div class="text-area" (click)="showPartOfFilter('promotion')">
+                    <span>Promovare > : {{ filters.minPromotionPercent }}%</span>
+                </div>
+                <div class="close-area">
+                    <div class="close-button" (click)="removeFilter('prom-minim')">×</div>
+                </div>
+            </div>
+            }
+        </div>
+        <div class="sorting-area">
+            @if(sortCriteria){
+            <span>Sortare: {{ sortCriteria }}</span>
+            }
+        </div>
         <div class="right-section">
             <button class="btn" (click)="showFilter()">Filtrează</button>
             <button class="btn" (click)="showSort()">Sortează</button>
         </div>
-    </div>
-    <div class="active-filters">
-        @if(sortCriteria){
-        <span>Sortare: {{ sortCriteria }}</span>
-        }
-        @if(filters.profil.length){
-        <span>Profiluri: {{ filters.profil.join(', ') }}</span>
-        }
-
-        @if(filters.minMean)
-        {
-        <span>Medie minimă: {{ filters.minMean }}</span>
-        }
-
-        @if(filters.minPromotionPercent)
-        {
-        <span>Promovabilitate minimă: {{ filters.minPromotionPercent }}%</span>
-        }
     </div>
     @if(showSortModal)
     {
@@ -61,6 +85,8 @@
     @if(showFilterModal){
     <div class="modal">
         <div class="modal-content">
+            @if( showOnlyMean==false && showOnlyPromRate==false)
+            {
             <h3>Filtrare</h3>
 
             <label>Profil:</label>
@@ -74,26 +100,33 @@
                 </label>
                 }
             </div>
+            }
 
+            @if(showOnlyProfiles==false &&showOnlyPromRate==false)
+            {
             <label>Medie minimă:</label>
             <input type="number" [(ngModel)]="filters.minMean" min="0" max="10" step="0.1" />
+            }
 
+            @if(showOnlyProfiles==false && showOnlyMean==false)
+            {
             <label>Promovabilitate minimă (%):</label>
             <input type="number" [(ngModel)]="filters.minPromotionPercent" min="0" max="100" step="1" />
+            }
 
             <div class="modal-actions">
                 <button class="button" style="background-color: rgb(45, 107, 30);"
                     (click)="applyFilters()">Aplică</button>
                 <button class="button" style="background-color: rgb(97, 22, 22);"
                     (click)="resetFilters()">Reset</button>
-                <button class="button" (click)="showFilterModal = false">Închide</button>
+                <button class="button" (click)="closeFilterModal()">Închide</button>
             </div>
         </div>
     </div>
     }
 
     <div class="high-schools-list">
-        @for(s of showHighschoolsArray; track $index)
+        @for(s of showHighschools; track $index)
         {
         <app-high-school-card [stats]="s" (click)="openStatsModal(s)"></app-high-school-card>
         }
@@ -109,6 +142,6 @@
     }
     @if(showLoader)
     {
-        <app-loader></app-loader>
+    <app-loader></app-loader>
     }
 </div>

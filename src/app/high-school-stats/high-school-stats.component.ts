@@ -27,6 +27,9 @@ export class HighSchoolStatsComponent {
   showSortModal = false;
   showStatsModal = false;
   showLoader = false;
+  showOnlyMean = false;
+  showOnlyProfiles = false;
+  showOnlyPromRate = false;
 
   filters = {
     profil: [] as string[],
@@ -37,9 +40,9 @@ export class HighSchoolStatsComponent {
 
   sortCriteria = ''
 
-  highschoolsArray: HighschoolStats[] = []
+  highschools: HighschoolStats[] = []
 
-  showHighschoolsArray: HighschoolStats[] = [] //here will be highschools in right order respecting the filters
+  showHighschools: HighschoolStats[] = [] //here will be highschools in right order respecting the filters
 
   selectedHighschool: HighschoolStats | null = null;
 
@@ -50,8 +53,8 @@ export class HighSchoolStatsComponent {
       this.selectedCounty = countyParam as County;
       const abbreviation = CountyAbbreviation[countyParam as keyof typeof CountyAbbreviation];
       this.highschoolService.getStatsByCounty(abbreviation).subscribe((data) => {
-        this.highschoolsArray = data;
-        this.showHighschoolsArray = data;
+        this.highschools = data;
+        this.showHighschools = data;
 
         const allProfiles = data.flatMap(hs => hs.profile);
         this.availableProfiles = [...new Set(allProfiles)].sort();
@@ -67,9 +70,9 @@ export class HighSchoolStatsComponent {
 
     const abbreviation = CountyAbbreviation[this.selectedCounty as keyof typeof CountyAbbreviation];
     this.highschoolService.getStatsByCounty(abbreviation).subscribe((data) => {
-      this.highschoolsArray = data;
-      console.log(this.highschoolsArray)
-      this.showHighschoolsArray = data;
+      this.highschools = data;
+      console.log(this.highschools)
+      this.showHighschools = data;
 
       const allProfiles = data.flatMap(hs => hs.profile);
       this.availableProfiles = [...new Set(allProfiles)].sort();
@@ -82,27 +85,27 @@ export class HighSchoolStatsComponent {
 
     switch (sortType) {
       case 'medie bac crescător':
-        this.showHighschoolsArray.sort((a, b) => a.averageGrade - b.averageGrade);
+        this.showHighschools.sort((a, b) => a.averageGrade - b.averageGrade);
         break;
 
       case 'medie bac descrescător':
-        this.showHighschoolsArray.sort((a, b) => b.averageGrade - a.averageGrade);
+        this.showHighschools.sort((a, b) => b.averageGrade - a.averageGrade);
         break;
 
       case 'rata promovabilitate crescător':
-        this.showHighschoolsArray.sort((a, b) => a.passingPercentage - b.passingPercentage);
+        this.showHighschools.sort((a, b) => a.passingPercentage - b.passingPercentage);
         break;
 
       case 'rata promovabilitate descrescător':
-        this.showHighschoolsArray.sort((a, b) => b.passingPercentage - a.passingPercentage);
+        this.showHighschools.sort((a, b) => b.passingPercentage - a.passingPercentage);
         break;
 
       case 'alfabetic crescător':
-        this.showHighschoolsArray.sort((a, b) => a.highschool.localeCompare(b.highschool));
+        this.showHighschools.sort((a, b) => a.highschool.localeCompare(b.highschool));
         break;
 
       case 'alfabetic descrescător':
-        this.showHighschoolsArray.sort((a, b) => b.highschool.localeCompare(a.highschool));
+        this.showHighschools.sort((a, b) => b.highschool.localeCompare(a.highschool));
         break;
       default:
         break;
@@ -127,7 +130,7 @@ export class HighSchoolStatsComponent {
 
 
   applyFilters() {
-    this.showHighschoolsArray = this.highschoolsArray.filter(hs => {
+    this.showHighschools = this.highschools.filter(hs => {
       if (hs.averageGrade < this.filters.minMean) {
         return false;
       }
@@ -144,7 +147,9 @@ export class HighSchoolStatsComponent {
       }
       return true;
     });
-
+    this.showOnlyMean = false;
+    this.showOnlyProfiles = false;
+    this.showOnlyPromRate = false;
     this.showFilterModal = false;
   }
 
@@ -153,17 +158,65 @@ export class HighSchoolStatsComponent {
   }
 
   showFilter() {
+    this.showOnlyMean = false;
+    this.showOnlyProfiles = false;
+    this.showOnlyPromRate = false;
     this.showFilterModal = true;
   }
 
+  closeFilterModal() {
+    this.showOnlyMean = false;
+    this.showOnlyProfiles = false;
+    this.showOnlyPromRate = false;
+    this.showFilterModal = false;
+  }
+
+  showPartOfFilter(filter: string) {
+
+    switch (filter) {
+      case 'profiles':
+        this.showOnlyProfiles = true
+        this.showFilterModal = true
+        break;
+      case 'mean':
+        this.showOnlyMean = true
+        this.showFilterModal = true
+        break;
+      case 'promotion':
+        this.showOnlyPromRate = true
+        this.showFilterModal = true
+        break;
+    }
+    console.log('Profile ' + this.showOnlyProfiles)
+    console.log('Promovare ' + this.showOnlyPromRate)
+    console.log('Medie ' + this.showOnlyMean)
+  }
+
   resetFilters() {
-    this.filters = {
-      profil: [] as string[],
-      minMean: 0,
-      minPromotionPercent: 0
-    };
-    this.showHighschoolsArray = this.highschoolsArray
-    this.showFilterModal = false
+
+    if (this.showOnlyMean == false && this.showOnlyProfiles == false && this.showOnlyPromRate == false) {
+      this.filters = {
+        profil: [] as string[],
+        minMean: 0,
+        minPromotionPercent: 0
+      };
+      this.showHighschools = this.highschools
+    }
+    else {
+      if(this.showOnlyMean==true)
+      {
+        this.filters.minMean=0
+      }
+      if(this.showOnlyProfiles==true)
+      {
+        this.filters.profil=[]
+      }
+      if(this.showOnlyPromRate)
+      {
+        this.filters.minPromotionPercent=0
+      }
+    }
+    this.closeFilterModal()
   }
 
   openStatsModal(hs: HighschoolStats) {
@@ -178,5 +231,23 @@ export class HighSchoolStatsComponent {
 
   navigateHome() {
     this.router.navigate(["/"])
+  }
+
+  removeFilter(filter: string) {
+    switch (filter) {
+      case 'min-mean':
+        this.filters.minMean = 0
+        this.applyFilters()
+        break;
+      case 'prom-minim':
+        this.filters.minPromotionPercent = 0
+        this.applyFilters()
+        break
+      case 'profiles':
+        this.filters.profil = []
+        this.applyFilters()
+        break;
+    }
+
   }
 }
