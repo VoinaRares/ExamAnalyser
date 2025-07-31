@@ -11,7 +11,7 @@ export interface RawExaminee {
   nmate: string;// Nota matematica
   lm: string;   // Limba materna
   nlm: string;  // Nota limba materna
-  h: string;    // High school info (HTML)
-  sp: string;   // Specialization info (HTML)
+  h: string;    // High school info
+  sp: string;   // Specialization info
   rank?: number; // County-wide rank position
 }

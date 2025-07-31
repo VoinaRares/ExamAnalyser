@@ -1,0 +1,120 @@
+:host {
+  display: block;
+  padding: 2rem;
+  background-color: #fff;
+  color: #222;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  align-items: flex-end;
+}
+
+.select-wrapper {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  min-width: 180px;
+}
+
+label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #222;
+}
+
+select {
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f8f8f8;
+  color: #333;
+
+  &:focus {
+    border-color: #1976d2;
+    outline: none;
+  }
+}
+
+.button-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.blue-btn {
+  background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  box-shadow: 0 2px 8px 0 rgba(25, 118, 210, 0.08) !important;
+  transition: background 0.2s, box-shadow 0.2s !important;
+}
+
+.blue-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #1565c0 0%, #1976d2 100%) !important;
+  box-shadow: 0 4px 16px 0 rgba(25, 118, 210, 0.16) !important;
+}
+
+.red-btn {
+  background: linear-gradient(90deg, #e53935 0%, #ff5252 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 50% !important;
+  font-weight: bold !important;
+  font-size: 18px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  padding: 0 !important;
+  margin-left: 8px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px 0 rgba(229, 57, 53, 0.08) !important;
+  transition: background 0.2s, box-shadow 0.2s !important;
+}
+
+.red-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #b71c1c 0%, #e53935 100%) !important;
+  box-shadow: 0 4px 16px 0 rgba(229, 57, 53, 0.16) !important;
+}
+
+.applied-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  color: #fff;
+  font-weight: 500;
+  background-color: #555;
+  width: fit-content;
+}
+
+.chart-wrapper {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.admission-chart {
+  width: 100% !important;
+  height: 30rem !important;
+}

@@ -4,33 +4,52 @@
       <h2>Admitere Liceu</h2>
 
       <label for="county">Județ</label>
-      <select formControlName="county">
-        <option *ngFor="let c of counties" [value]="c.value">
-          {{ c.label }}
-        </option>
+      <select id="county" formControlName="county">
+        @for (c of counties; track c.value) {
+        <option [value]="c.value">{{ c.label }}</option>
+        }
       </select>
 
       <label for="year">An</label>
       <select id="year" formControlName="year" [disabled]="!years.length">
         <option [ngValue]="null" disabled selected>Selectează anul</option>
-        <option *ngFor="let year of years" [ngValue]="year">
-          {{ year }}
-        </option>
+        @for (year of years; track year) {
+        <option [ngValue]="year">{{ year }}</option>
+        }
       </select>
 
       <label for="grade">Notă</label>
-      <input
+      <p-inputNumber
         id="grade"
-        type="number"
         formControlName="grade"
-        min="1"
-        max="10"
-      />
+        [min]="1"
+        [max]="10"
+        mode="decimal"
+        inputStyleClass="custom-input"
+      ></p-inputNumber>
 
       <label for="delimiter">Delimitator (opțional)</label>
-      <input id="delimiter" type="number" formControlName="delimiter" />
+      <p-inputNumber
+        id="delimiter"
+        formControlName="delimiter"
+        inputStyleClass="custom-input"
+      ></p-inputNumber>
 
-      <button type="submit" [disabled]="form.invalid">Calculează</button>
+      <button
+        pButton
+        type="submit"
+        label="Calculează"
+        [disabled]="form.invalid"
+        class="submit-button"
+      ></button>
+
+      <button
+        pButton
+        type="button"
+        label="Vezi clasamentul"
+        (click)="goToRanker()"
+        class="ranker-button"
+      ></button>
     </form>
   </div>
 
@@ -38,20 +57,17 @@
     <div class="card-section-wrapper">
       <h3>Specializări posibile:</h3>
 
-      <ng-container *ngIf="specializationGroups.length > 0; else noResults">
-        <div class="card-container">
-          <app-school-card
-            *ngFor="let spec of specializationGroups"
-            [specialization]="spec"
-          ></app-school-card>
-        </div>
-      </ng-container>
-
-      <ng-template #noResults>
-        <p class="no-results">
-          Completează formularul pentru a vedea opțiunile disponibile.
-        </p>
-      </ng-template>
+      @if (specializationGroups.length > 0) {
+      <div class="card-container">
+        @for (spec of specializationGroups; track spec) {
+        <app-school-card [specialization]="spec"></app-school-card>
+        }
+      </div>
+      } @else {
+      <p class="no-results">
+        Completează formularul pentru a vedea opțiunile disponibile.
+      </p>
+      }
     </div>
   </div>
 </div>

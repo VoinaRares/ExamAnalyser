@@ -1,0 +1,62 @@
+<div class="controls">
+  <div class="select-wrapper">
+    <label for="schoolSelect">Liceu:</label>
+    <select
+      id="schoolSelect"
+      [(ngModel)]="pendingSchool"
+      (change)="onSchoolChange()"
+    >
+      <option value="">Selectează liceul</option>
+      @for (o of schoolOptions; track o.value) {
+        <option [value]="o.value">{{ o.value }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="select-wrapper">
+    <label for="specSelect">Specializare:</label>
+    <select
+      id="specSelect"
+      [(ngModel)]="pendingSpec"
+      [disabled]="!pendingSchool"
+    >
+      <option value="">Selectează specializarea</option>
+      @for (o of specOptions; track o.value) {
+        <option [value]="o.value">{{ o.value }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="button-wrapper">
+    <p-button
+      (click)="applyFilter()"
+      [disabled]="!pendingSchool || !pendingSpec"
+      styleClass="blue-btn"
+      label="Aplică filtru"
+    ></p-button>
+  </div>
+</div>
+
+@if (appliedFilters.length > 0) {
+  <div class="applied-filters">
+    @for (f of appliedFilters; let i = $index; track f.label) {
+      <div class="filter-chip">
+        {{ f.label }}
+        <p-button
+          (click)="removeFilter(i)"
+          styleClass="red-btn"
+          label="×"
+        ></p-button>
+      </div>
+    }
+  </div>
+}
+
+<div class="chart-wrapper">
+  <p-chart
+    type="line"
+    [data]="chartData"
+    [options]="chartOptions"
+    styleClass="admission-chart"
+  ></p-chart>
+</div>

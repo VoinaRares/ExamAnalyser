@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { DataService } from '../data.service';
 import { SchoolCardComponent } from '../school-cards/school-card.component';
 import { SpecializationGroup } from '../specialization-group.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-highschool-form',
@@ -35,7 +36,7 @@ export class HighschoolFormComponent implements OnInit {
   years: number[] = [];
   specializationGroups: SpecializationGroup[] = [];
 
-  constructor(private fb: FormBuilder, private dataService: DataService) {
+  constructor(private fb: FormBuilder, private dataService: DataService, private router: Router) {
     this.form = this.fb.group({
       county: this.fb.control<string | null>(null, Validators.required),
       year: this.fb.control<number | null>(null, Validators.required),
@@ -74,5 +75,10 @@ export class HighschoolFormComponent implements OnInit {
           .sort((a, b) => b.lowestAdmissionGrade - a.lowestAdmissionGrade);
       });
     }
+  }
+
+  //To add county specificity for the ranker
+  goToRanker(){
+    this.router.navigate(['/clasament-ultimele-admiteri']);
   }
 }

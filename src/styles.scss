@@ -1,5 +1,17 @@
-body{
-    margin: 0;
+body {
+  margin: 0;
+
+  // Aura theme input overrides (global, light mode)
+  --inputBg: #f0f0f0;
+  --inputTextColor: black;
+  --inputBorderColor: #ccc;
+  --inputHoverBorderColor: #4f46e5;
+  --inputFocusBorderColor: #4f46e5;
+  --focusOutlineColor: transparent;
+
+  // Optional: Radius and padding control
+  --inputBorderRadius: 0.5rem;
+  --inputPadding: 0.75rem;
 }
 
 app-root {
@@ -8,4 +20,3 @@ app-root {
   min-height: 100vh;
   background-color: #f7f9fc;
 }
-

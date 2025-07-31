@@ -5,13 +5,6 @@ $input-border: #ccc;
 $primary-color: #4f46e5;
 $primary-hover: #4338ca;
 
-body {
-  background-color: #f7f9fc;
-  margin: 0;
-  padding: 2rem;
-  height: 100%;
-}
-
 .page-container {
   color: black;
 }
@@ -22,7 +15,6 @@ body {
   align-items: center;
   padding: 1rem;
   background-color: #f7f9fc;
-  color: black;
 
   form {
     background: white;
@@ -46,7 +38,7 @@ body {
       font-weight: 500;
     }
 
-    input,
+    // Style for native <select>
     select {
       padding: 0.75rem;
       font-size: 1rem;
@@ -54,6 +46,7 @@ body {
       border: 1px solid $input-border;
       background-color: $input-bg;
       color: black;
+      appearance: none;
 
       &:focus {
         border-color: $primary-color;
@@ -61,7 +54,24 @@ body {
       }
     }
 
-    button {
+    // PrimeNG inputNumber uses this internally
+    ::ng-deep .p-inputnumber .p-inputtext {
+      background-color: $input-bg !important;
+      color: black !important;
+      border: 1px solid $input-border !important;
+      border-radius: 0.5rem !important;
+      padding: 0.75rem !important;
+      font-size: 1rem !important;
+
+      &:focus {
+        border-color: $primary-color !important;
+        box-shadow: none !important;
+        outline: none !important;
+      }
+    }
+
+    // Button styling (PrimeNG's pButton)
+    .submit-button {
       background-color: $primary-color;
       color: white;
       padding: 0.75rem;
@@ -81,10 +91,6 @@ body {
       }
     }
   }
-}
-
-.form-wrapper {
-  padding-bottom: 0rem;
 }
 
 .card-section {
@@ -115,4 +121,3 @@ body {
     margin-top: 1rem;
   }
 }
-
