@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { HighschoolStats } from '../model/highSchoolStats';
+import { CountyAbbreviation } from '../countyAbbreviation.enum';
 
 @Injectable({ providedIn: 'root' })
 export class baccalaureateService {
@@ -73,7 +74,7 @@ export class baccalaureateService {
           const profile = row[idx.profile];
           const mandatorySubj = row[idx.mandatorySubject];
           const optionalSubj = row[idx.optionalSubject];
- 
+
           if (!this.fullDataStructure[countyAbbreviation][schoolName]) {
             this.fullDataStructure[countyAbbreviation][schoolName] = {};
           }
@@ -153,11 +154,81 @@ export class baccalaureateService {
     return this.fullDataStructure;
   }
 
-  getGradesOnProfile() {
-    return this.gradesOnProfile;
-  }
-
   getGradesOnProfileForHighschool(county: string, highschool: string, profile: string) {
     return this.gradesOnProfile[county]?.[highschool]?.[profile];
   }
+
+  getAllGradesForHighschool(county: string, highschool: string) {
+    return this.gradesOnProfile[county]?.[highschool]
+  }
+
+  getSubjectsForHighschool(county: string, highschool: string): string[] {
+    const subjectsSet = new Set<string>();
+    const schoolProfiles = this.gradesOnProfile[CountyAbbreviation[county as keyof typeof CountyAbbreviation]]?.[highschool];
+
+    if (!schoolProfiles) return [];
+
+    for (const profile of Object.keys(schoolProfiles)) {
+      const subjects = schoolProfiles[profile];
+      for (const subject of Object.keys(subjects)) {
+        subjectsSet.add(subject);
+      }
+    }
+
+    return Array.from(subjectsSet);
+  }
+
+  getSubjectDistributions(county: string, highschool: string): Record<string, number[]> {
+  const subjectDistributions: Record<string, number[]> = {};
+
+  const schoolProfiles = this.gradesOnProfile[county]?.[highschool];
+  console.log(schoolProfiles)
+  if (!schoolProfiles) return subjectDistributions;
+
+  for (const profile of Object.keys(schoolProfiles)) {
+    const subjects = schoolProfiles[profile];
+
+    for (const subject of Object.keys(subjects)) {
+      const grades = subjects[subject];
+      if (!grades) continue;
+
+      if (!subjectDistributions[subject]) {
+        subjectDistributions[subject] = new Array(10).fill(0);
+      }
+
+      for (const grade of grades) {
+        if (!isNaN(grade) && grade >= 0 && grade <= 10) {
+          const bin = Math.min(9, Math.floor(grade));
+          subjectDistributions[subject][bin]++;
+        }
+      }
+    }
+  }
+
+  return subjectDistributions;
+}
+
+/*getGradesForSubjectOnProfile(
+  countyCode: string,
+  highschool: string,
+  profile: string,
+  subject: string
+): string[] {
+  const data = this.rawStructure?.[countyCode]?.[highschool]?.[profile];
+  if (!data) return [];
+
+  const grades: string[] = [];
+
+  for (const row of data) {
+    const rowSubject = row[13]; 
+    const grade = row[14];      // sau alt index pentru nota
+
+    if (rowSubject === subject && grade) {
+      grades.push(grade);
+    }
+  }
+
+  return grades;
+}*/
+
 }

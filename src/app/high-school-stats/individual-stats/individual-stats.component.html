@@ -8,8 +8,27 @@
         <div class="section">
             <h3>Statistici generale liceu</h3>
             <h4>Medie generală: {{mean}}</h4>
-            <div class="chart-box">[Distribuția mediilor generale]</div>
-            <div class="chart-box">[Distribuția notelor pe materii]</div>
+            <div class="chart-box">
+                <canvas baseChart [data]="generalPieChartData" [type]="pieChartType" [options]="pieChartOptions">
+                </canvas>
+            </div>
+
+            <div class="chart-box">
+                <div class="subjects">
+                    @for (subject of subjects; track $index)
+                    {
+                    <button (click)="onSubjectSelect(subject)">
+                        {{ subject }}
+                    </button>
+                    }
+                </div>
+                @if(selectedSubject)
+                {
+                <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="'bar'">
+                </canvas>
+                }
+
+            </div>
 
         </div>
 
@@ -20,7 +39,7 @@
             <label for="profileSelect">Selectează profil:</label>
             <select id="profileSelect" [(ngModel)]="selectedProfile" (change)="onProfileChange($event)">
                 @for (p of highschool()?.profile; track $index) {
-                    <option [value]="p">{{ p }}</option>
+                <option [value]="p">{{ p }}</option>
                 }
             </select>
 
@@ -29,7 +48,11 @@
             {
             <div class="profile-details">
                 <h4>Media elevilor acestui profil este: {{profileMean}}</h4>
-                <div class="chart-box">[Distributie medii pe profil: {{ selectedProfile }}]</div>
+                <div class="chart-box">
+                    <canvas baseChart [data]="profilePieChartData" [type]="pieChartType" [options]="pieChartOptions">
+                    </canvas>
+                </div>
+
                 <div class="chart-box">[Distribuția notelor pe materii pentru: {{ selectedProfile }}]</div>
             </div>
             }

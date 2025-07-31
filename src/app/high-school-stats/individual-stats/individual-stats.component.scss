@@ -110,4 +110,41 @@ select {
   text-align: center;
   color: #666;
   min-height: 200px;
+
+   canvas {
+    max-width: 270px; // ← ajustează după preferință
+    max-height: 350px;
+    margin: 0 auto;
+    display: block;
+  }
 }
+
+.subjects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  button {
+    background-color: #e3f6f5;
+    border: 1px solid #4BC0C0;
+    color: #1b2a2f;
+    padding: 0.4rem 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #d1eeee;
+    }
+  }
+
+  canvas {
+    max-width: 700px;  // lățime mărită
+    max-height: 200px; // înălțime mărită
+    width: 100%;     
+    height: auto;
+    margin: 0 auto;
+    display: block;
+  }
+}
+

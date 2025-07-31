@@ -12,12 +12,10 @@ export const routes: Routes = [
   { path: 'statistici-licee', component: HighSchoolStatsComponent },
   { path: 'statistici-licee/:county', component: HighSchoolStatsComponent },
   {
-    path: 'recomandare-inteligenta',
-    component: HighSchoolRecommendationComponent,
+    path: 'recomandare-inteligenta', component: HighSchoolRecommendationComponent,
   },
   {
-    path: 'clasament-ultimele-admiteri',
-    component: LastAdmissionRankerComponent,
+    path: 'clasament-ultimele-admiteri', component: LastAdmissionRankerComponent,
   },
   { path: 'bac-chart', component: BacPieChartComponent }
 ];

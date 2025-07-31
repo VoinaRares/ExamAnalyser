@@ -224,6 +224,7 @@ $card-bg: rgb(108, 150, 218);
 
 .home-button {
   position: fixed;
+  aspect-ratio: 1/1;
   bottom: 20px;
   left: 20px;
   background-color: #79999f;
@@ -231,7 +232,7 @@ $card-bg: rgb(108, 150, 218);
   border: none;
   border-radius: 50%;
   padding: 12px;
-  font-size: 20px;
+  font-size: 30px;
   cursor: pointer;
   z-index: 1000;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
