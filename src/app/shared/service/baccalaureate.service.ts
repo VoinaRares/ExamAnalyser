@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { HighschoolStats } from '../model/highSchoolStats';
 
@@ -12,6 +12,16 @@ export class baccalaureateService {
     [county: string]: {
       [school: string]: {
         [profile: string]: any[][];
+      };
+    };
+  } = {};
+
+  private gradesOnProfile: {
+    [county: string]: {
+      [school: string]: {
+        [profile: string]: {
+          [subject: string]: number[];
+        };
       };
     };
   } = {};
@@ -32,6 +42,8 @@ export class baccalaureateService {
           mandatory: getIndex('Nota finală disciplina obligatorie'),
           optional: getIndex('Nota finala alegere'),
           profile: getIndex('Specializare'),
+          mandatorySubject: getIndex('Disciplina obligatorie'),
+          optionalSubject: getIndex('Disciplina alegere'),
         };
 
         const filtered = rows.filter(row =>
@@ -48,6 +60,10 @@ export class baccalaureateService {
           this.fullDataStructure[countyAbbreviation] = {};
         }
 
+        if (!this.gradesOnProfile[countyAbbreviation]) {
+          this.gradesOnProfile[countyAbbreviation] = {};
+        }
+
         for (const row of filtered) {
           const schoolName = row[idx.school];
           const avg = parseFloat(row[idx.average]);
@@ -55,7 +71,9 @@ export class baccalaureateService {
           const mandatory = parseFloat(row[idx.mandatory]);
           const optional = parseFloat(row[idx.optional]);
           const profile = row[idx.profile];
-
+          const mandatorySubj = row[idx.mandatorySubject];
+          const optionalSubj = row[idx.optionalSubject];
+ 
           if (!this.fullDataStructure[countyAbbreviation][schoolName]) {
             this.fullDataStructure[countyAbbreviation][schoolName] = {};
           }
@@ -64,7 +82,37 @@ export class baccalaureateService {
           }
           this.fullDataStructure[countyAbbreviation][schoolName][profile].push(row);
 
-          // populare structura pentru statistici
+          if (!this.gradesOnProfile[countyAbbreviation][schoolName]) {
+            this.gradesOnProfile[countyAbbreviation][schoolName] = {};
+          }
+          if (!this.gradesOnProfile[countyAbbreviation][schoolName][profile]) {
+            this.gradesOnProfile[countyAbbreviation][schoolName][profile] = {};
+          }
+
+          // Adăugare notă română
+          if (!this.gradesOnProfile[countyAbbreviation][schoolName][profile]['Limba și literatura română']) {
+            this.gradesOnProfile[countyAbbreviation][schoolName][profile]['Limba și literatura română'] = [];
+          }
+          if (!isNaN(rom)) {
+            this.gradesOnProfile[countyAbbreviation][schoolName][profile]['Limba și literatura română'].push(rom);
+          }
+
+          // Adăugare notă disciplină obligatorie
+          if (mandatorySubj && !this.gradesOnProfile[countyAbbreviation][schoolName][profile][mandatorySubj]) {
+            this.gradesOnProfile[countyAbbreviation][schoolName][profile][mandatorySubj] = [];
+          }
+          if (!isNaN(mandatory)) {
+            this.gradesOnProfile[countyAbbreviation][schoolName][profile][mandatorySubj]?.push(mandatory);
+          }
+
+          // Adăugare notă disciplină alegere
+          if (optionalSubj && !this.gradesOnProfile[countyAbbreviation][schoolName][profile][optionalSubj]) {
+            this.gradesOnProfile[countyAbbreviation][schoolName][profile][optionalSubj] = [];
+          }
+          if (!isNaN(optional)) {
+            this.gradesOnProfile[countyAbbreviation][schoolName][profile][optionalSubj]?.push(optional);
+          }
+
           if (!grouped[schoolName]) {
             grouped[schoolName] = { grades: [], passed: 0, profiles: new Set() };
           }
@@ -103,5 +151,13 @@ export class baccalaureateService {
 
   getRawStructure() {
     return this.fullDataStructure;
+  }
+
+  getGradesOnProfile() {
+    return this.gradesOnProfile;
+  }
+
+  getGradesOnProfileForHighschool(county: string, highschool: string, profile: string) {
+    return this.gradesOnProfile[county]?.[highschool]?.[profile];
   }
 }

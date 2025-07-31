@@ -4,6 +4,7 @@ import { HighschoolFormComponent } from './highschool-form/highschool-form.compo
 import { HighSchoolStatsComponent } from './high-school-stats/high-school-stats.component';
 import { HighSchoolRecommendationComponent } from './high-school-recommendation/high-school-recommendation.component';
 import { LastAdmissionRankerComponent } from './last-admission-ranker/last-admission-ranker.component';
+import { BacPieChartComponent } from './bac-pie-chart/bac-pie-chart.component';
 
 export const routes: Routes = [
   { path: '', component: HomepageComponent },
@@ -18,4 +19,5 @@ export const routes: Routes = [
     path: 'clasament-ultimele-admiteri',
     component: LastAdmissionRankerComponent,
   },
+  { path: 'bac-chart', component: BacPieChartComponent }
 ];
