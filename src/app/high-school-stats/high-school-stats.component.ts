@@ -48,6 +48,8 @@ export class HighSchoolStatsComponent {
 
   ngOnInit() {
     const countyParam = this.route.snapshot.paramMap.get('county');
+    const queryParams = this.route.snapshot.queryParamMap;
+
     if (countyParam && Object.values(County).includes(countyParam as County)) {
       this.showLoader = true
       this.selectedCounty = countyParam as County;
@@ -58,8 +60,22 @@ export class HighSchoolStatsComponent {
 
         const allProfiles = data.flatMap(hs => hs.profile);
         this.availableProfiles = [...new Set(allProfiles)].sort();
-        this.showLoader = false
+       
+
+        const profilesFromQuery = queryParams.getAll('profil');
+        const minMean = parseFloat(queryParams.get('minMean') || '0');
+        const minPromotion = parseFloat(queryParams.get('minPromotionPercent') || '0');
+
+        this.filters.profil = profilesFromQuery;
+        this.filters.minMean = isNaN(minMean) ? 0 : minMean;
+        this.filters.minPromotionPercent = isNaN(minPromotion) ? 0 : minPromotion;
+
+        if (profilesFromQuery.length > 0 || this.filters.minMean > 0 || this.filters.minPromotionPercent > 0) {
+          this.applyFilters();
+        }
+       this.showLoader = false
       });
+
     }
   }
 
@@ -147,6 +163,19 @@ export class HighSchoolStatsComponent {
       }
       return true;
     });
+
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        profil: this.filters.profil.length > 0 ? [...this.filters.profil] : null,
+        minMean: this.filters.minMean || null,
+        minPromotionPercent: this.filters.minPromotionPercent || null
+      },
+      queryParamsHandling: 'merge'
+    });
+
+
     this.showOnlyMean = false;
     this.showOnlyProfiles = false;
     this.showOnlyPromRate = false;
@@ -203,17 +232,14 @@ export class HighSchoolStatsComponent {
       this.showHighschools = this.highschools
     }
     else {
-      if(this.showOnlyMean==true)
-      {
-        this.filters.minMean=0
+      if (this.showOnlyMean == true) {
+        this.filters.minMean = 0
       }
-      if(this.showOnlyProfiles==true)
-      {
-        this.filters.profil=[]
+      if (this.showOnlyProfiles == true) {
+        this.filters.profil = []
       }
-      if(this.showOnlyPromRate)
-      {
-        this.filters.minPromotionPercent=0
+      if (this.showOnlyPromRate) {
+        this.filters.minPromotionPercent = 0
       }
     }
     this.closeFilterModal()
