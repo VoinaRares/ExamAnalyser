@@ -1,61 +1,63 @@
 <div class="stats-modal">
-    <div class="stats-content">
-        <button class="close-btn" (click)="close()">✕</button>
+  <div class="top-part">
+    <h2 class="highschool-name">{{ highschool()?.highschool }}</h2>
+    <button class="close-btn" (click)="close()">✕</button>
+  </div>
 
-        <h2 class="highschool-name">{{ highschool()?.highschool }}</h2>
+  <div class="stats-content">
+    <!-- Secțiunea 1: Statistici generale pentru liceu -->
+    <div class="section">
+      <h3>Statistici generale liceu</h3>
+      <h4>Medie generală: {{ mean }}</h4>
+      <div class="chart-box">
+        <canvas baseChart [data]="generalPieChartData" [type]="pieChartType" [options]="pieChartOptions"></canvas>
+      </div>
 
-        <!-- Secțiunea 1: Statistici generale pentru liceu -->
-        <div class="section">
-            <h3>Statistici generale liceu</h3>
-            <h4>Medie generală: {{mean}}</h4>
-            <div class="chart-box">
-                <canvas baseChart [data]="generalPieChartData" [type]="pieChartType" [options]="pieChartOptions">
-                </canvas>
-            </div>
-
-            <div class="chart-box">
-                <div class="subjects">
-                    @for (subject of subjects; track $index)
-                    {
-                    <button (click)="onSubjectSelect(subject)">
-                        {{ subject }}
-                    </button>
-                    }
-                </div>
-                @if(selectedSubject)
-                {
-                <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="'bar'">
-                </canvas>
-                }
-
-            </div>
-
+      <div class="chart-box">
+        <div class="subjects">
+          @for (subject of subjects; track $index) {
+          <button (click)="onSubjectSelect(subject)" [class.selected]="subject === selectedSubject">
+            {{ subject }}
+          </button>
+          }
         </div>
-
-        <!-- Secțiunea 2: Statistici pe profil -->
-        <div class="section">
-            <h3>Statistici pe profil</h3>
-            <p class="subtitle">Selectează un profil pentru a vedea detalii specifice.</p>
-            <label for="profileSelect">Selectează profil:</label>
-            <select id="profileSelect" [(ngModel)]="selectedProfile" (change)="onProfileChange($event)">
-                @for (p of highschool()?.profile; track $index) {
-                <option [value]="p">{{ p }}</option>
-                }
-            </select>
-
-            <!-- Zona dedicată profilului selectat -->
-            @if(selectedProfile)
-            {
-            <div class="profile-details">
-                <h4>Media elevilor acestui profil este: {{profileMean}}</h4>
-                <div class="chart-box">
-                    <canvas baseChart [data]="profilePieChartData" [type]="pieChartType" [options]="pieChartOptions">
-                    </canvas>
-                </div>
-
-                <div class="chart-box">[Distribuția notelor pe materii pentru: {{ selectedProfile }}]</div>
-            </div>
-            }
-        </div>
+        @if (selectedSubject) {
+        <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="'bar'"></canvas>
+        }
+      </div>
     </div>
+
+    <!-- Secțiunea 2: Statistici pe profil -->
+    <div class="section">
+      <h3>Statistici pe profil</h3>
+      <label for="profileSelect" class="subtitle">Selectează un profil pentru a vedea detalii specifice.</label>
+      <select id="profileSelect" [(ngModel)]="selectedProfile" (change)="onProfileChange($event)">
+        @for (p of highschool()?.profile; track $index) {
+        <option [value]="p">{{ p }}</option>
+        }
+      </select>
+
+      @if (selectedProfile) {
+      <div class="profile-details">
+        <h4>Media elevilor acestui profil este: {{ profileMean }}</h4>
+        <div class="chart-box">
+          <canvas baseChart [data]="profilePieChartData" [type]="pieChartType" [options]="pieChartOptions"></canvas>
+        </div>
+
+        <div class="chart-box">
+          <div class="subjects">
+            @for (subject of profileSubjects; track $index) {
+            <button (click)="onProfileSubjectSelect(subject)" [class.selected]="subject === selectedProfileSubject">
+              {{ subject }}
+            </button>
+            }
+          </div>
+          @if (selectedProfileSubject) {
+          <canvas baseChart [data]="barProfileChartData" [options]="barChartOptions" [type]="'bar'"></canvas>
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </div>
 </div>

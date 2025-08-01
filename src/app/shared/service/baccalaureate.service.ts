@@ -208,27 +208,5 @@ export class baccalaureateService {
   return subjectDistributions;
 }
 
-/*getGradesForSubjectOnProfile(
-  countyCode: string,
-  highschool: string,
-  profile: string,
-  subject: string
-): string[] {
-  const data = this.rawStructure?.[countyCode]?.[highschool]?.[profile];
-  if (!data) return [];
-
-  const grades: string[] = [];
-
-  for (const row of data) {
-    const rowSubject = row[13]; 
-    const grade = row[14];      // sau alt index pentru nota
-
-    if (rowSubject === subject && grade) {
-      grades.push(grade);
-    }
-  }
-
-  return grades;
-}*/
 
 }
