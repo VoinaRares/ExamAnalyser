@@ -81,4 +81,8 @@ export class HighschoolFormComponent implements OnInit {
   goToRanker(){
     this.router.navigate(['/clasament-ultimele-admiteri']);
   }
+
+  goBack() {
+    this.router.navigate(['/']);
+  }
 }

@@ -133,4 +133,8 @@ export class LastAdmissionRankerComponent implements OnInit {
 
     this.chartData = { datasets: allDatasets };
   }
+
+  goBack() {
+    window.history.back();
+  }
 }

@@ -1,3 +1,11 @@
+<button
+    pButton
+    type="button"
+    class="back-button"
+    icon="pi pi-arrow-left"
+    label="Înapoi"
+    (click)="goBack()"
+  ></button>
 <div class="controls">
   <div class="select-wrapper">
     <label for="schoolSelect">Liceu:</label>
@@ -8,7 +16,7 @@
     >
       <option value="">Selectează liceul</option>
       @for (o of schoolOptions; track o.value) {
-        <option [value]="o.value">{{ o.value }}</option>
+      <option [value]="o.value">{{ o.value }}</option>
       }
     </select>
   </div>
@@ -22,7 +30,7 @@
     >
       <option value="">Selectează specializarea</option>
       @for (o of specOptions; track o.value) {
-        <option [value]="o.value">{{ o.value }}</option>
+      <option [value]="o.value">{{ o.value }}</option>
       }
     </select>
   </div>
@@ -38,18 +46,18 @@
 </div>
 
 @if (appliedFilters.length > 0) {
-  <div class="applied-filters">
-    @for (f of appliedFilters; let i = $index; track f.label) {
-      <div class="filter-chip">
-        {{ f.label }}
-        <p-button
-          (click)="removeFilter(i)"
-          styleClass="red-btn"
-          label="×"
-        ></p-button>
-      </div>
-    }
+<div class="applied-filters">
+  @for (f of appliedFilters; let i = $index; track f.label) {
+  <div class="filter-chip">
+    {{ f.label }}
+    <p-button
+      (click)="removeFilter(i)"
+      styleClass="red-btn"
+      label="×"
+    ></p-button>
   </div>
+  }
+</div>
 }
 
 <div class="chart-wrapper">

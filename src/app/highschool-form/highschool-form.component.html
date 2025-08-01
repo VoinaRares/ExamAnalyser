@@ -1,6 +1,15 @@
 <div class="page-container">
   <div class="form-wrapper">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <button
+        pButton
+        type="button"
+        class="back-button"
+        icon="pi pi-arrow-left"
+        label="Înapoi"
+        (click)="goBack()"
+      ></button>
+
       <h2>Admitere Liceu</h2>
 
       <label for="county">Județ</label>

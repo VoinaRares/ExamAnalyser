@@ -6,6 +6,30 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.back-button {
+  margin-bottom: 1.5rem;
+  background-color: transparent !important;
+  color: black !important;
+  border: 1px solid #ccc !important;
+  padding: 0.4rem 0.75rem !important;
+  font-size: 0.875rem !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: none !important;
+  cursor: pointer;
+
+  .pi {
+    font-size: 0.85rem;
+  }
+
+  &:hover {
+    background-color: #f0f0f0 !important;
+    border-color: #999 !important;
+  }
+}
+
 .controls {
   display: flex;
   flex-wrap: wrap;
@@ -55,11 +79,11 @@ select {
   font-size: 14px !important;
   box-shadow: 0 2px 8px 0 rgba(25, 118, 210, 0.08) !important;
   transition: background 0.2s, box-shadow 0.2s !important;
-}
 
-.blue-btn:hover:not(:disabled) {
-  background: linear-gradient(90deg, #1565c0 0%, #1976d2 100%) !important;
-  box-shadow: 0 4px 16px 0 rgba(25, 118, 210, 0.16) !important;
+  &:hover:not(:disabled) {
+    background: linear-gradient(90deg, #1565c0 0%, #1976d2 100%) !important;
+    box-shadow: 0 4px 16px 0 rgba(25, 118, 210, 0.16) !important;
+  }
 }
 
 .red-btn {
@@ -80,11 +104,11 @@ select {
   justify-content: center;
   box-shadow: 0 2px 8px 0 rgba(229, 57, 53, 0.08) !important;
   transition: background 0.2s, box-shadow 0.2s !important;
-}
 
-.red-btn:hover:not(:disabled) {
-  background: linear-gradient(90deg, #b71c1c 0%, #e53935 100%) !important;
-  box-shadow: 0 4px 16px 0 rgba(229, 57, 53, 0.16) !important;
+  &:hover:not(:disabled) {
+    background: linear-gradient(90deg, #b71c1c 0%, #e53935 100%) !important;
+    box-shadow: 0 4px 16px 0 rgba(229, 57, 53, 0.16) !important;
+  }
 }
 
 .applied-filters {
