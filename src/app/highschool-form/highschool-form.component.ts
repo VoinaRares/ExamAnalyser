@@ -4,9 +4,9 @@ import { CommonModule } from '@angular/common';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { DataService } from '../data.service';
-import { SchoolCardComponent } from '../school-cards/school-card.component';
-import { SpecializationGroup } from '../specialization-group.interface';
+import { DataService } from '../shared/service/data.service';
+import { SchoolCardComponent } from './school-cards/school-card.component';
+import { SpecializationGroup } from '../shared/model/specialization-group.interface';
 import { Router } from '@angular/router';
 
 @Component({

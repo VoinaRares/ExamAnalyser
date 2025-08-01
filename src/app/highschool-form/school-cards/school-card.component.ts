@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
-import { SpecializationGroup } from '../specialization-group.interface';
+import { SpecializationGroup } from '../../shared/model/specialization-group.interface';
 
 @Component({
   selector: 'app-school-card',

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartOptions, ChartType, ChartData } from 'chart.js';
 
-import { DataService } from '../data.service';
+import { DataService } from '../shared/service/data.service';
 
 @Component({
   selector: 'app-bac-pie-chart',

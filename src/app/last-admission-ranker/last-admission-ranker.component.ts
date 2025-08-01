@@ -4,14 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
 import { forkJoin, map } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
-import { DataService } from '../data.service';
+import { DataService } from '../shared/service/data.service';
 import { ChartPoint } from './chart-point.interface';
 import {
   flattenGroupsToChartPoints,
   toChartJSData,
   getFilterColor,
-} from './last.admission-ranker.service';
-import { Filter } from './filter.interface';
+} from '../shared/service/last.admission-ranker.service';
+import { HighschoolFilter } from '../shared/model/highschool-filter.interface';
 
 @Component({
   standalone: true,
@@ -29,7 +29,7 @@ export class LastAdmissionRankerComponent implements OnInit {
   pendingSchool = '';
   pendingSpec = '';
 
-  appliedFilters: Filter[] = [];
+  appliedFilters: HighschoolFilter[] = [];
 
   chartData: any = { datasets: [] };
   chartOptions: any;

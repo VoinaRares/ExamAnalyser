@@ -1,5 +1,5 @@
-import { ChartPoint } from './chart-point.interface';
-import { SpecializationGroup } from '../specialization-group.interface';
+import { ChartPoint } from '../../last-admission-ranker/chart-point.interface';
+import { SpecializationGroup } from '../model/specialization-group.interface';
 
 const FILTER_PALETTE = [
   '#3e95cd', '#8e5ea2', '#3cba9f', '#e8c3b9',

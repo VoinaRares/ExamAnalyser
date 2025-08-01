@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, of } from 'rxjs';
-import { RawExaminee } from './raw-examinee.interface';
-import { SpecializationGroup } from './specialization-group.interface';
+import { RawExaminee } from '../model/raw-examinee.interface';
+import { SpecializationGroup } from '../model/specialization-group.interface';
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
