@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
@@ -18,10 +24,10 @@ import { Router } from '@angular/router';
     InputNumberModule,
     InputTextModule,
     ButtonModule,
-    SchoolCardComponent
+    SchoolCardComponent,
   ],
   templateUrl: './highschool-form.component.html',
-  styleUrl: './highschool-form.component.scss'
+  styleUrl: './highschool-form.component.scss',
 })
 export class HighschoolFormComponent implements OnInit {
   form: FormGroup<{
@@ -36,53 +42,76 @@ export class HighschoolFormComponent implements OnInit {
   years: number[] = [];
   specializationGroups: SpecializationGroup[] = [];
 
-  constructor(private fb: FormBuilder, private dataService: DataService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private dataService: DataService,
+    private router: Router
+  ) {
     this.form = this.fb.group({
       county: this.fb.control<string | null>(null, Validators.required),
       year: this.fb.control<number | null>(null, Validators.required),
-      grade: this.fb.control<number | null>(null, [Validators.required, Validators.min(1), Validators.max(10)]),
-      delimiter: this.fb.control<number | null>(null)
+      grade: this.fb.control<number | null>(null, [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(10),
+      ]),
+      delimiter: this.fb.control<number | null>(null),
     });
   }
 
   ngOnInit() {
-    this.dataService.getCounties().subscribe(counties => {
+    this.dataService.getCounties().subscribe((counties) => {
       this.counties = counties;
     });
 
     this.form.get('county')?.valueChanges.subscribe((county) => {
       if (county) {
-        this.dataService.getAvailableYears(county).subscribe((years: number[]) => {
-          this.years = years;
-          this.form.get('year')?.reset();
-        });
+        this.dataService
+          .getAvailableYears(county)
+          .subscribe((years: number[]) => {
+            this.years = years;
+            this.form.get('year')?.reset();
+          });
       }
     });
   }
 
   onSubmit() {
-    if (!this.form.valid) {
-      console.warn('Form is invalid');
-      return;
-    }
-
-    const { county, year, grade } = this.form.value;
-
-    if (county && year && grade != null) {
-      this.dataService.getGroupedSchools(county, year).subscribe((groups: SpecializationGroup[]) => {
-        this.specializationGroups = groups
-          .filter((group) => grade >= group.lowestAdmissionGrade)
-          .sort((a, b) => b.lowestAdmissionGrade - a.lowestAdmissionGrade);
-      });
-    }
+  if (this.form.invalid) {
+    this.form.markAllAsTouched(); // show validation errors
+    return;
   }
 
+  const { county, year, grade } = this.form.value;
+
+  if (county && year && grade != null) {
+    this.dataService.getGroupedSchools(county, year).subscribe((groups: SpecializationGroup[]) => {
+      this.specializationGroups = groups
+        .filter((group) => grade >= group.lowestAdmissionGrade)
+        .sort((a, b) => b.lowestAdmissionGrade - a.lowestAdmissionGrade);
+    });
+  }
+}
+
+
   //To add county specificity for the ranker
-  goToRanker(){
+  goToRanker() {
     this.router.navigate(['/clasament-ultimele-admiteri']);
   }
 
   goBack() {
     this.router.navigate(['/']);
+  }
+
+  get countyControl() {
+    return this.form.get('county');
+  }
+
+  get yearControl() {
+    return this.form.get('year');
+  }
+
+  get gradeControl() {
+    return this.form.get('grade');
   }
 }
