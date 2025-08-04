@@ -51,6 +51,10 @@ export class IndividualStatsComponent {
     datasets: [{ data: [], backgroundColor: '#4BC0C0', label: 'Distribuție note' }]
   };
 
+  barProfileChartData: ChartData<'bar', number[], string | string[]> = {
+    labels: [],
+    datasets: [{ data: [], backgroundColor: '#4BC0C0', label: 'Distribuție note' }]
+  };
   barChartOptions: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -85,6 +89,9 @@ export class IndividualStatsComponent {
   selectedSubject = '';
   subjects: string[] = [];
 
+  profileSubjects: string[] = [];
+  selectedProfileSubject = '';
+
 
 
   ngOnInit() {
@@ -105,11 +112,12 @@ export class IndividualStatsComponent {
     const countyCode = CountyAbbreviation[this.county()! as keyof typeof CountyAbbreviation]
 
     //in profileData e dictionar cu chei numele materiei si valoare un array de note
-    //const profileData = this.bacService.getGradesOnProfileForHighschool(countyCode, this.highschool()!.highschool, selectedProfile)
+    const profileData = this.bacService.getGradesOnProfileForHighschool(countyCode, this.highschool()!.highschool, selectedProfile)
+    console.log(profileData)
+    this.profileSubjects = Object.keys(profileData)
     const rawData = this.bacService.getRawStructure();
 
     const profileRows = rawData[countyCode][this.highschool()!.highschool]?.[selectedProfile];
-    console.log(profileRows)
 
     if (!profileRows) {
       this.profileMean = 0;
@@ -235,5 +243,36 @@ export class IndividualStatsComponent {
     };
   }
 
+  onProfileSubjectSelect(subject: string) {
+    this.selectedProfileSubject = subject;
+    const countyCode = CountyAbbreviation[this.county()! as keyof typeof CountyAbbreviation];
+    const data = this.bacService.getGradesOnProfileForHighschool(countyCode, this.highschool()!.highschool, this.selectedProfile)
+    const rawGrades = data[subject] ?? [];
+
+    const bins = new Array(10).fill(0);
+    for (const grade of rawGrades) {
+      const index = Math.min(Math.floor(grade), 9); 
+      bins[index]++;
+    }
+
+    this.barProfileChartData = {
+      labels: ['0-1', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10'],
+      datasets: [{
+        data: bins,
+        backgroundColor: '#4BC0C0',
+        label: 'Distribuție note'
+      }]
+    };
+    console.log(bins)
+
+    this.barProfileChartData = {
+      labels: ['0-1', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10'],
+      datasets: [{
+        data: bins,
+        backgroundColor: '#4BC0C0',
+        label: 'Distribuție note'
+      }]
+    };
+  }
 
 }
