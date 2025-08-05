@@ -1,22 +1,38 @@
 <button
-    pButton
-    type="button"
-    class="back-button"
-    icon="pi pi-arrow-left"
-    label="Înapoi"
-    (click)="goBack()"
-  ></button>
+  pButton
+  type="button"
+  class="back-button"
+  icon="pi pi-arrow-left"
+  label="Înapoi"
+  (click)="goBack()"
+></button>
+
 <div class="controls">
+  <div class="select-wrapper">
+    <label for="filterCounty">Județ:</label>
+    <select
+      id="filterCounty"
+      [(ngModel)]="pendingCounty"
+      (change)="onPendingCountyChange()"
+    >
+      <option value="">Selectează județul</option>
+      @for (c of counties; track c.value) {
+      <option [value]="c.value">{{ c.label }}</option>
+      }
+    </select>
+  </div>
+
   <div class="select-wrapper">
     <label for="schoolSelect">Liceu:</label>
     <select
       id="schoolSelect"
       [(ngModel)]="pendingSchool"
+      [disabled]="!pendingCounty"
       (change)="onSchoolChange()"
     >
       <option value="">Selectează liceul</option>
-      @for (o of schoolOptions; track o.value) {
-      <option [value]="o.value">{{ o.value }}</option>
+      @for (s of schoolOptions; track s.value) {
+      <option [value]="s.value">{{ s.label }}</option>
       }
     </select>
   </div>
@@ -29,8 +45,8 @@
       [disabled]="!pendingSchool"
     >
       <option value="">Selectează specializarea</option>
-      @for (o of specOptions; track o.value) {
-      <option [value]="o.value">{{ o.value }}</option>
+      @for (s of specOptions; track s.value) {
+      <option [value]="s.value">{{ s.label }}</option>
       }
     </select>
   </div>
@@ -38,16 +54,25 @@
   <div class="button-wrapper">
     <p-button
       (click)="applyFilter()"
-      [disabled]="!pendingSchool || !pendingSpec"
+      [disabled]="!pendingCounty || !pendingSchool || !pendingSpec"
       styleClass="blue-btn"
       label="Aplică filtru"
     ></p-button>
   </div>
+
+  <div class="reset-button">
+    <p-button
+      (click)="resetChart()"
+      styleClass="red-btn"
+      icon="pi pi-times"
+      label="Resetează graficul"
+    ></p-button>
+  </div>
 </div>
 
-@if (appliedFilters.length > 0) {
+@if (((appliedFilters$ | async) ?? []).length > 0) {
 <div class="applied-filters">
-  @for (f of appliedFilters; let i = $index; track f.label) {
+  @for (f of appliedFilters$ | async; track f.label; let i = $index) {
   <div class="filter-chip">
     {{ f.label }}
     <p-button
@@ -63,7 +88,7 @@
 <div class="chart-wrapper">
   <p-chart
     type="line"
-    [data]="chartData"
+    [data]="chartData$ | async"
     [options]="chartOptions"
     styleClass="admission-chart"
   ></p-chart>

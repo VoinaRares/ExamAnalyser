@@ -2,16 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
-import { forkJoin, map } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
-import { DataService } from '../shared/service/data.service';
-import { ChartPoint } from './chart-point.interface';
-import {
-  flattenGroupsToChartPoints,
-  toChartJSData,
-  getFilterColor,
-} from '../shared/service/last.admission-ranker.service';
+import { Observable } from 'rxjs';
 import { HighschoolFilter } from '../shared/model/highschool-filter.interface';
+import { RankerStateService } from '../shared/service/last.admission-ranker.state.service';
+import { DataService } from '../shared/service/data.service';
 
 @Component({
   standalone: true,
@@ -19,122 +14,107 @@ import { HighschoolFilter } from '../shared/model/highschool-filter.interface';
   imports: [CommonModule, FormsModule, ChartModule, ButtonModule],
   templateUrl: './last-admission-ranker.component.html',
   styleUrls: ['./last-admission-ranker.component.scss'],
+  providers: [RankerStateService]
 })
 export class LastAdmissionRankerComponent implements OnInit {
-  points: ChartPoint[] = [];
+  counties: { label: string; value: string }[] = [];
+  chartData$: Observable<any>;
+  appliedFilters$: Observable<HighschoolFilter[]>;
 
+  pendingCounty = '';
+  pendingSchool = '';
+  pendingSpec = '';
   schoolOptions: { label: string; value: string }[] = [];
   specOptions: { label: string; value: string }[] = [];
 
-  pendingSchool = '';
-  pendingSpec = '';
+  readonly chartOptions = {
+    responsive: true,
+    plugins: {
+      tooltip: { mode: 'index', intersect: false },
+      legend: { position: 'bottom' }
+    },
+    scales: {
+      x: {
+        title: { display: true, text: 'An' },
+        type: 'linear',
+        ticks: { stepSize: 1, min: 2010, max: 2024 }
+      },
+      y: {
+        title: { display: true, text: 'Media ultimului admis' },
+        min: 5,
+        max: 10
+      }
+    }
+  };
 
-  appliedFilters: HighschoolFilter[] = [];
-
-  chartData: any = { datasets: [] };
-  chartOptions: any;
-
-  constructor(private dataService: DataService) {}
+  constructor(
+    private state: RankerStateService,
+    private dataService: DataService
+  ) {
+    this.chartData$ = this.state.chartData$;
+    this.appliedFilters$ = this.state.appliedFilters$;
+  }
 
   ngOnInit(): void {
-    const county = 'brasov'; // hardcoded for Brasov
-
-    this.dataService.getAvailableYears(county).subscribe((availableYears) => {
-      const years = availableYears.filter((y) => y >= 2010);
-
-      const requests = years.map((year) =>
-        this.dataService
-          .getGroupedSchools(county, year)
-          .pipe(map((data) => ({ year, data })))
-      );
-
-      forkJoin(requests).subscribe((yearlyGroups) => {
-        this.points = flattenGroupsToChartPoints(yearlyGroups);
-
-        this.schoolOptions = [...new Set(this.points.map((p) => p.school))].map(
-          (s) => ({ label: s, value: s })
-        );
-
-        this.chartOptions = {
-          responsive: true,
-          plugins: {
-            tooltip: { mode: 'index', intersect: false },
-            legend: { position: 'bottom' },
-          },
-          scales: {
-            x: {
-              title: { display: true, text: 'An' },
-              type: 'linear',
-              ticks: { stepSize: 1, min: 2010, max: Math.max(...years) },
-            },
-            y: {
-              title: { display: true, text: 'Media ultimului admis' },
-              min: 5,
-              max: 10,
-            },
-          },
-          backgroundColor: '#ffffff',
-        };
-
-        this.updateChart();
-      });
+    this.dataService.getCounties().subscribe(counties => {
+      this.counties = counties;
     });
   }
 
-  onSchoolChange() {
-    this.pendingSpec = '';
-    if (!this.pendingSchool) {
-      this.specOptions = [];
-      return;
-    }
-    const specs = this.points
-      .filter((p) => p.school === this.pendingSchool)
-      .map((p) => p.specialization);
-    this.specOptions = Array.from(new Set(specs))
-      .sort((a, b) => a.localeCompare(b))
-      .map((s) => ({ label: s, value: s }));
-  }
+  onPendingCountyChange(): void {
+    this.resetSchoolSelections();
+    if (!this.pendingCounty) return;
 
-  applyFilter() {
-    if (!this.pendingSchool || !this.pendingSpec) return;
-
-    const label = `${this.pendingSchool} | ${this.pendingSpec}`;
-    // avoid duplicates
-    if (!this.appliedFilters.some((f) => f.label === label)) {
-      this.appliedFilters.push({
-        school: this.pendingSchool,
-        spec: this.pendingSpec,
-        label,
-      });
-      this.updateChart();
-    }
-  }
-
-  removeFilter(idx: number) {
-    this.appliedFilters.splice(idx, 1);
-    this.updateChart();
-  }
-
-  updateChart() {
-    const allDatasets = this.appliedFilters.flatMap((f, idx) => {
-      const chart = toChartJSData(this.points, {
-        school: f.school,
-        spec: f.spec,
-      });
-
-      const color = getFilterColor(idx);
-      return chart.datasets.map((ds) => ({
-        ...ds,
-        label: f.label,
-        borderColor: color,
-        backgroundColor: color,
-      }));
+    this.state.getSchoolOptions(this.pendingCounty).subscribe(options => {
+      this.schoolOptions = options;
     });
-
-    this.chartData = { datasets: allDatasets };
   }
 
-  goBack() {
+  onSchoolChange(): void {
+    this.resetSpecSelections();
+    if (!this.pendingCounty || !this.pendingSchool) return;
+
+    this.state.getSpecOptions(this.pendingCounty, this.pendingSchool).subscribe(options => {
+      this.specOptions = options;
+    });
+  }
+
+  applyFilter(): void {
+    if (!this.pendingCounty || !this.pendingSchool || !this.pendingSpec) return;
+
+    const filter: HighschoolFilter = {
+      county: this.pendingCounty,
+      school: this.pendingSchool,
+      spec: this.pendingSpec,
+      label: `${this.pendingCounty} | ${this.pendingSchool} | ${this.pendingSpec}`
+    };
+
+    this.state.applyFilter(filter);
+  }
+
+  removeFilter(index: number): void {
+    this.state.removeFilter(index);
+  }
+
+  resetChart(): void {
+    this.pendingCounty = '';
+    this.resetSchoolSelections();
+    this.state.resetFilters();
+  }
+
+  goBack(): void {
     window.history.back();
+  }
+
+  private resetSchoolSelections(): void {
+    this.pendingSchool = '';
+    this.pendingSpec = '';
+    this.schoolOptions = [];
+    this.resetSpecSelections();
+  }
+
+  private resetSpecSelections(): void {
+    this.pendingSpec = '';
+    this.specOptions = [];
   }
 }

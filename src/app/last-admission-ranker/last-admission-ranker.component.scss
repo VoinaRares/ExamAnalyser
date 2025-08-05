@@ -3,7 +3,7 @@
   padding: 2rem;
   background-color: #fff;
   color: #222;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .back-button {
@@ -141,4 +141,13 @@ select {
 .admission-chart {
   width: 100% !important;
   height: 30rem !important;
+}
+
+.reset-button {
+  margin-top: 20px;
+  text-align: center;
+
+  .p-button {
+    padding: 0.5rem 1rem;
+  }
 }

@@ -5,4 +5,5 @@ export type ChartPoint = {
   language: string;
   label: string;
   madm: number;
+  county: string;
 };

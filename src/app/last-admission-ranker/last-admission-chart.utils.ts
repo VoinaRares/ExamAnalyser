@@ -1,23 +1,21 @@
-import { ChartPoint } from '../../last-admission-ranker/chart-point.interface';
-import { SpecializationGroup } from '../model/specialization-group.interface';
+import { ChartPoint } from '../shared/model/chart-point.interface';
+import { SpecializationGroup } from '../shared/model/specialization-group.interface';
 
 const FILTER_PALETTE = [
   '#3e95cd', '#8e5ea2', '#3cba9f', '#e8c3b9',
-  '#c45850', '#a8d8ea', '#ffab91', '#c5e1a5',
-  '#b39ddb', '#80cbc4'
+  '#c45850', '#a8d8ea', '#ffab91', '#c5e1a5'
 ];
 
 export function getFilterColor(idx: number): string {
   return FILTER_PALETTE[idx % FILTER_PALETTE.length];
 }
 
-
 export function flattenGroupsToChartPoints(
-  allGroups: { year: number; data: SpecializationGroup[] }[]
+  allGroups: { year: number; county: string; data: SpecializationGroup[] }[]
 ): ChartPoint[] {
-  const points: ChartPoint[] = [];
+  const rawPoints: ChartPoint[] = [];
 
-  for (const { year, data } of allGroups) {
+  for (const { year, county, data } of allGroups) {
     for (const group of data) {
       const raw = group.lastCandidate?.madm;
       if (!raw) continue;
@@ -27,24 +25,36 @@ export function flattenGroupsToChartPoints(
 
       const spec = group.specialization.replace(/\(.*?\)/g, '').trim();
 
-      points.push({
+      rawPoints.push({
         year,
         school: group.school,
         specialization: spec,
         language: group.language,
         madm,
+        county,
         label: `${group.school} | ${spec}`,
       });
     }
   }
-  return points;
-}
 
+  const uniqueMap = new Map<string, ChartPoint>();
+  for (const p of rawPoints) {
+    const key = `${p.county}|${p.school}|${p.specialization}|${p.year}`;
+    if (!uniqueMap.has(key)) {
+      uniqueMap.set(key, p);
+    } else {
+      const existing = uniqueMap.get(key)!;
+      existing.madm = Math.max(existing.madm, p.madm);
+    }
+  }
+
+  return Array.from(uniqueMap.values());
+}
 
 export function toChartJSData(
   points: ChartPoint[],
   filters: { school?: string; spec?: string }
-) {
+): { datasets: any[] } {
   if (!filters.school && !filters.spec) {
     return { datasets: [] };
   }
