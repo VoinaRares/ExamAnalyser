@@ -44,7 +44,8 @@ export function flattenGroupsToChartPoints(
       uniqueMap.set(key, p);
     } else {
       const existing = uniqueMap.get(key)!;
-      existing.madm = Math.max(existing.madm, p.madm);
+      existing.madm = Number(((existing.madm + p.madm) / 2).toFixed(2));
+
     }
   }
 
