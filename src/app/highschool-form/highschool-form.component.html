@@ -1,77 +1,80 @@
-<div class="page-container">
-  <div class="form-wrapper">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <button
-        pButton
-        type="button"
-        class="back-button"
-        icon="pi pi-arrow-left"
-        label="Înapoi"
-        (click)="goBack()"
-      ></button>
+<div class="page">
+  <div class="left">
+    <div class="form-wrapper">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <h2>Admitere Liceu</h2>
 
-      <h2>Admitere Liceu</h2>
-
-      <label for="county">Județ*</label>
-      <select id="county" formControlName="county">
-        @for (c of counties; track c.value) {
-        <option [value]="c.value">{{ c.label }}</option>
+        <label for="county">Județ*</label>
+        <select id="county" formControlName="county">
+          @for (c of counties; track c.value) {
+          <option [value]="c.value">{{ c.label }}</option>
+          }
+        </select>
+        @if (form.get('county')?.touched && form.get('county')?.invalid) {
+        <div class="form-error">Selectează un județ.</div>
         }
-      </select>
-      @if (form.get('county')?.touched && form.get('county')?.invalid) {
-      <div class="form-error">Selectează un județ.</div>
-      }
 
-      <label for="year">An*</label>
-      <select id="year" formControlName="year" [disabled]="!years.length">
-        <option [ngValue]="null" disabled selected>Selectează anul</option>
-        @for (year of years; track year) {
-        <option [ngValue]="year">{{ year }}</option>
+        <label for="year">An*</label>
+        <select id="year" formControlName="year" [disabled]="!years.length">
+          <option [ngValue]="null" disabled selected>Selectează anul</option>
+          @for (year of years; track year) {
+          <option [ngValue]="year">{{ year }}</option>
+          }
+        </select>
+        @if (form.get('year')?.touched && form.get('year')?.invalid) {
+        <div class="form-error">Selectează un an.</div>
         }
-      </select>
-      @if (form.get('year')?.touched && form.get('year')?.invalid) {
-      <div class="form-error">Selectează un an.</div>
-      }
 
-      <label for="grade">Notă*</label>
-      <p-inputNumber
-        id="grade"
-        formControlName="grade"
-        [min]="1"
-        [max]="10"
-        mode="decimal"
-        inputStyleClass="custom-input"
-      ></p-inputNumber>
-      @if (gradeControl && gradeControl.touched && gradeControl.errors) {
-      <div class="form-error">
-        @if (gradeControl.errors['required']) { Introdu nota. } @if
-        (gradeControl.errors['min']) { Nota trebuie să fie cel puțin 1. } @if
-        (gradeControl.errors['max']) { Nota nu poate fi mai mare de 10. }
-      </div>
-      }
+        <label for="grade">Notă*</label>
+        <p-inputNumber id="grade" formControlName="grade" [min]="1" [max]="10" mode="decimal"
+          inputStyleClass="custom-input"></p-inputNumber>
+        @if (gradeControl && gradeControl.touched && gradeControl.errors) {
+        <div class="form-error">
+          @if (gradeControl.errors['required']) { Introdu nota. } @if
+          (gradeControl.errors['min']) { Nota trebuie să fie cel puțin 1. } @if
+          (gradeControl.errors['max']) { Nota nu poate fi mai mare de 10. }
+        </div>
+        }
 
-      <label for="delimiter">Delimitator (opțional)</label>
-      <p-inputNumber
-        id="delimiter"
-        formControlName="delimiter"
-        inputStyleClass="custom-input"
-      ></p-inputNumber>
+        <label for="delimiter">Delimitator (opțional)</label>
+        <p-inputNumber id="delimiter" formControlName="delimiter" inputStyleClass="custom-input"></p-inputNumber>
 
-      <button
-        pButton
-        type="submit"
-        label="Calculează"
-        class="submit-button"
-      ></button>
+        <button pButton type="submit" label="Calculează" class="submit-button"></button>
+      </form>
+    </div>
+  </div>
 
-      <button
-        pButton
-        type="button"
-        label="Vezi clasamentul"
-        (click)="goToRanker()"
-        class="ranker-button"
-      ></button>
-    </form>
+  <div class="right">
+    <button class="chart-button" (click)="goToRanker()">
+      Vezi evoluția ultimului admis
+    </button>
+
+    <div class="instructions">
+      <h3>Instrucțiuni de completare</h3>
+      <ol>
+        <li>Selectează județul dorit din listă.</li>
+        <li>Alege anul pentru care vrei să vezi datele.</li>
+        <li>Introdu nota obținută la Evaluarea Națională.</li>
+        <li>(Opțional) setează un delimitator pentru notă.</li>
+        <li>Apasă „Calculează” pentru a vedea sugestii.</li>
+      </ol>
+    </div>
+  </div>
+
+
+
+  <button class="home-button" (click)="navigateHome()">
+    <i class="fa fa-home"></i>
+  </button>
+</div>
+
+
+<!--
+    <button pButton type="button" label="Vezi clasamentul" (click)="goToRanker()" class="ranker-button"></button>
+
+
+ <div class="page-container">
+    
   </div>
 
   <div class="card-section">
@@ -91,4 +94,4 @@
       }
     </div>
   </div>
-</div>
+</div> -->

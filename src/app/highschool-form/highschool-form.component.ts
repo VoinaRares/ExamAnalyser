@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -13,7 +13,7 @@ import { ButtonModule } from 'primeng/button';
 import { DataService } from '../shared/service/data.service';
 import { SchoolCardComponent } from './school-cards/school-card.component';
 import { SpecializationGroup } from '../shared/model/specialization-group.interface';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-highschool-form',
@@ -24,7 +24,6 @@ import { Router } from '@angular/router';
     InputNumberModule,
     InputTextModule,
     ButtonModule,
-    SchoolCardComponent,
   ],
   templateUrl: './highschool-form.component.html',
   styleUrl: './highschool-form.component.scss',
@@ -38,9 +37,10 @@ export class HighschoolFormComponent implements OnInit {
   }>;
 
   counties: { label: string; value: string }[] = [];
-
   years: number[] = [];
   specializationGroups: SpecializationGroup[] = [];
+
+  route=inject(ActivatedRoute)
 
   constructor(
     private fb: FormBuilder,
@@ -81,7 +81,16 @@ export class HighschoolFormComponent implements OnInit {
     this.form.markAllAsTouched(); // show validation errors
     return;
   }
-
+  this.router.navigate(['/vezi-licee'],{
+      relativeTo: this.route,
+      queryParams: {
+        judet: this.form.get('county')?.value,
+        an: this.form.get('year')?.value,
+        nota: this.form.get('grade')?.value,
+        delimiter:  this.form.get("delimiter")?.value || null,
+      },
+      queryParamsHandling: 'merge'
+    })
   const { county, year, grade } = this.form.value;
 
   if (county && year && grade != null) {
@@ -113,5 +122,9 @@ export class HighschoolFormComponent implements OnInit {
 
   get gradeControl() {
     return this.form.get('grade');
+  }
+
+  navigateHome() {
+    this.router.navigate(["/"])
   }
 }

@@ -1,0 +1,19 @@
+$background-color: #ecfcff;
+.page{
+    background-color: $background-color;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-part{
+    background-color: #79999f;
+    height: 5.5vh;
+    width: 100%;
+}
+
+.list{
+    height: 90%;
+    width: 100%;
+}
