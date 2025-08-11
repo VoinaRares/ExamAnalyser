@@ -13,16 +13,16 @@
       <strong>Prima medie de intrare:</strong>
       {{ specialization.highestAdmissionGrade.toFixed(2) }}
       (abs. {{ formatGrade(specialization.firstCandidate.mabs) }}) - poziția
-      {{ specialization.firstCandidate.rank }}, ID:
-      {{ specialization.firstCandidate.n }}
+      {{ specialization.firstCandidate.rank }}, <!--ID:
+      {{ specialization.firstCandidate.n }} cred ca putem scoate partea asta cu candidatul -->
     </div>
 
     <div class="mb-2" *ngIf="specialization.lastCandidate">
       <strong>Ultima medie de intrare:</strong>
       {{ specialization.lowestAdmissionGrade.toFixed(2) }}
       (abs. {{ formatGrade(specialization.lastCandidate.mabs) }}) - poziția
-      {{ specialization.lastCandidate.rank }}, ID:
-      {{ specialization.lastCandidate.n }}
+      {{ specialization.lastCandidate.rank }}, <!--ID:
+      {{ specialization.lastCandidate.n }}-->
     </div>
 
     <div class="mb-2" *ngIf="specialization.positionRange">

@@ -1,8 +1,38 @@
 <div class="page">
     <div class="top-part">
-        Aici voi scrie judetul, nota si anul ca sa le pot vedea mereu + buton in care pot schimba aceste lucruri
-    </div>
-    <div class="list">
+        <div class="button-area">
+            <button class="btn" (click)="goToForm()">Schimbă datele formularului</button>
+        </div>
 
+        <div class="information-area">
+            <p>Județ: {{judet}}</p>
+            <p>An: {{an}}</p>
+            <p>Nota: {{nota}}</p>
+        </div>
     </div>
+
+    <div class="list">
+        @if (specializationGroups.length > 0) {
+        <div class="card-container">
+            @for (spec of specializationGroups; track spec) {
+            <app-school-card [specialization]="spec"></app-school-card>
+            }
+        </div>
+        } @else {
+        <p class="no-results">
+            Completează formularul pentru a vedea opțiunile disponibile.
+        </p>
+        }
+    </div>
+
+    <button class="side-button" id="evolutie-admis" (click)="goToGraph()">
+        Vezi evoluția ultimului admis
+    </button>
+    <button class="side-button" id="grad-ocupare">
+        Vezi gradul de ocupare
+    </button>
+
+    <button class="side-button"  id= "home" (click)="navigateHome()">
+        <i class="fa fa-home"></i>
+    </button>
 </div>

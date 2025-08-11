@@ -45,9 +45,15 @@
   </div>
 
   <div class="right">
-    <button class="chart-button" (click)="goToRanker()">
-      Vezi evoluția ultimului admis
-    </button>
+    <div class="button-group">
+      <button class="chart-button" (click)="goToRanker()">
+        Vezi evoluția ultimului admis
+      </button>
+
+      <button class="chart-button">
+        Vezi gradul de ocupare
+      </button>
+    </div>
 
     <div class="instructions">
       <h3>Instrucțiuni de completare</h3>
@@ -61,37 +67,7 @@
     </div>
   </div>
 
-
-
   <button class="home-button" (click)="navigateHome()">
     <i class="fa fa-home"></i>
   </button>
 </div>
-
-
-<!--
-    <button pButton type="button" label="Vezi clasamentul" (click)="goToRanker()" class="ranker-button"></button>
-
-
- <div class="page-container">
-    
-  </div>
-
-  <div class="card-section">
-    <div class="card-section-wrapper">
-      <h3>Specializări posibile:</h3>
-
-      @if (specializationGroups.length > 0) {
-      <div class="card-container">
-        @for (spec of specializationGroups; track spec) {
-        <app-school-card [specialization]="spec"></app-school-card>
-        }
-      </div>
-      } @else {
-      <p class="no-results">
-        Completează formularul pentru a vedea opțiunile disponibile.
-      </p>
-      }
-    </div>
-  </div>
-</div> -->

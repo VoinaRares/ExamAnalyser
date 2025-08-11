@@ -10,7 +10,6 @@ $background-color: #ecfcff;
   height: 100vh;
   width: 100vw;
   background-color: $background-color;
-
   display: flex;
   flex-direction: row;
   color: black;
@@ -116,58 +115,66 @@ $background-color: #ecfcff;
     }
   }
 
-.right {
-  width: 45%;
-  height: 100%;
-  padding: 4rem 3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 2rem;
+  .right {
+    width: 45%;
+    height: 100%;
+    padding: 4rem 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 2rem;
 
-  .chart-button {
-    height: 6%;
-    border-radius: 10px;
-
-    background: green;
-    border: none;
-    color: $primary-color;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 5px;
-    transition: color 0.3s ease;
-
-    &:hover {
-      color: $primary-hover;
-    }
-  }
-
-  .instructions {
-    h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      color: #111827;
-    }
-
-    ol {
-      padding-left: 1.5rem;
+    .button-group {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 1rem;
+      width: 100%;
+      max-width: 350px;
 
-      li {
-        font-size: 1rem;
-        color: #374151;
-        line-height: 1.5;
+      .chart-button {
+        flex: 1;
+        min-height: 50px;
+        background-color: $primary-color;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 0.75rem 1rem;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        text-align: center;
+
+        &:hover {
+          background-color: $primary-hover;
+          transform: translateY(-2px);
+        }
+      }
+    }
+
+    .instructions {
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #111827;
+      }
+
+      ol {
+        padding-left: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        li {
+          font-size: 1rem;
+          color: #374151;
+          line-height: 1.5;
+        }
       }
     }
   }
-}
-
-
 }
 
 .form-error {

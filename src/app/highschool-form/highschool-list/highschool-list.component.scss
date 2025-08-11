@@ -1,19 +1,126 @@
 $background-color: #ecfcff;
-.page{
+$button-background-color: #004b66;
+$button-hover-color: #006b8f;
+$side-button-color: #79999f;
+$side-button-hover: #5a5a5a;
+
+.page {
     background-color: $background-color;
-    height: 100%;
+    height: 100vh;
     width: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.top-part{
+.top-part {
     background-color: #79999f;
-    height: 5.5vh;
+    height: 7vh;
     width: 100%;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    .button-area {
+        width: 20%;
+        display: flex;
+        height: 100%;
+        align-items: center;
+
+        .btn {
+            background-color: $button-background-color;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+                background-color: $button-hover-color;
+            }
+        }
+    }
+
+    .information-area {
+        height: 100%;
+        width: 80%;
+        display: flex;
+        font-size: larger;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
 }
 
-.list{
-    height: 90%;
-    width: 100%;
+.list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+
+    /* Scrollbar stilizat */
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: #79999f;
+        border-radius: 5px;
+    }
+    &::-webkit-scrollbar-track {
+        background-color: #d6e6ea;
+    }
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.no-results {
+    text-align: center;
+    color: #555;
+    font-size: 1.2rem;
+}
+
+
+.side-button {
+    position: fixed;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: $side-button-color;
+    color: white;
+    border: none;
+    cursor: pointer;
+    z-index: 999;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 0.7rem;
+    padding: 5px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        background-color: $side-button-hover;
+        transform: scale(1.05);
+    }
+}
+
+#evolutie-admis {
+    bottom: 100px;
+}
+
+#grad-ocupare {
+    bottom: 180px;
+}
+
+#home {
+    bottom: 20px;
+    font-size: xx-large;
 }
