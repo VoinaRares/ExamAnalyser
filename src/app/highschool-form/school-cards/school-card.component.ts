@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { SpecializationGroup } from '../../shared/model/specialization-group.interface';
@@ -12,6 +12,8 @@ import { SpecializationGroup } from '../../shared/model/specialization-group.int
 })
 export class SchoolCardComponent {
   @Input() specialization!: SpecializationGroup;
+  occupationRate=input(0);
+  showOccupationRate=input(false)
 
   formatGrade(grade: string | number): string {
     if (typeof grade === 'string') {

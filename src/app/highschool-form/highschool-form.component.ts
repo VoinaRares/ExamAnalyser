@@ -14,6 +14,7 @@ import { DataService } from '../shared/service/data.service';
 import { SchoolCardComponent } from './school-cards/school-card.component';
 import { SpecializationGroup } from '../shared/model/specialization-group.interface';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-highschool-form',
@@ -25,6 +26,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     InputTextModule,
     ButtonModule,
     SchoolCardComponent,
+    FormsModule
   ],
   templateUrl: './highschool-form.component.html',
   styleUrl: './highschool-form.component.scss',
@@ -37,9 +39,11 @@ export class HighschoolFormComponent implements OnInit {
     delimiter: FormControl<number | null>;
   }>;
 
+  activeSort = 'asc'
   counties: { label: string; value: string }[] = [];
   years: number[] = [];
   specializationGroups: SpecializationGroup[] = [];
+  showOccupancy: boolean = false;
 
   route = inject(ActivatedRoute);
 
@@ -61,10 +65,36 @@ export class HighschoolFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataService.getCounties().subscribe((counties) => {
-      this.counties = counties;
+
+    this.route.queryParamMap.subscribe(params => {
+      const countyParam = params.get('judet');
+      const yearParam = params.get('an');
+      const gradeParam = params.get('nota');
+      const delimiterParam = params.get('delimiter');
+
+      this.form.patchValue({
+        county: countyParam,
+        year: yearParam ? Number(yearParam) : null,
+        grade: gradeParam !== null ? Number(gradeParam) : null,
+        delimiter: delimiterParam !== null ? Number(delimiterParam) : null,
+      }, { emitEvent: false });
+
+      if (countyParam && yearParam && gradeParam !== null) {
+        this.dataService
+          .getGroupedSchools(countyParam, Number(yearParam))
+          .subscribe((groups: SpecializationGroup[]) => {
+            this.specializationGroups = groups
+              .filter(group => Number(gradeParam) >= group.lowestAdmissionGrade)
+              .sort((a, b) => b.lowestAdmissionGrade - a.lowestAdmissionGrade);
+          });
+
+        this.dataService.getAvailableYears(countyParam).subscribe((years: number[]) => {
+          this.years = years;
+        });
+      }
     });
 
+    // ✅ Când se schimbă județul, încărcăm anii disponibili
     this.form.get('county')?.valueChanges.subscribe((county) => {
       if (county) {
         this.dataService
@@ -74,6 +104,10 @@ export class HighschoolFormComponent implements OnInit {
             this.form.get('year')?.reset();
           });
       }
+    });
+
+    this.dataService.getCounties().subscribe((counties) => {
+      this.counties = counties;
     });
   }
 
@@ -94,6 +128,17 @@ export class HighschoolFormComponent implements OnInit {
             .sort((a, b) => b.lowestAdmissionGrade - a.lowestAdmissionGrade);
         });
     }
+
+    this.router.navigate(['/recomandare-liceu'], {
+      relativeTo: this.route,
+      queryParams: {
+        judet: county,
+        an: year,
+        nota: grade,
+        delimiter: this.form.get('delimiter')?.value || null,
+      },
+      queryParamsHandling: 'merge'
+    });
   }
 
   goToRanker() {
@@ -104,19 +149,25 @@ export class HighschoolFormComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  get countyControl() {
-    return this.form.get('county');
-  }
-
-  get yearControl() {
-    return this.form.get('year');
-  }
-
-  get gradeControl() {
-    return this.form.get('grade');
-  }
-
   navigateHome() {
     this.router.navigate(['/']);
   }
+
+  //pentru sortarea pe care o voi face ulterior
+  setSort(sort: string) {
+    this.activeSort = sort
+  }
+
+  onToggleChange() {
+    if (this.showOccupancy) {
+      // logica când e activat
+      console.log("Gradul de ocupare este afișat");
+    } else {
+      // logica când e dezactivat
+      console.log("Gradul de ocupare este ascuns");
+    }
+  }
+  get countyControl() { return this.form.get('county'); }
+  get yearControl() { return this.form.get('year'); }
+  get gradeControl() { return this.form.get('grade'); }
 }

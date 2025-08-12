@@ -1,4 +1,4 @@
-$form-padding: 2rem;
+$form-padding: 1rem;
 $form-gap: 1rem;
 $input-bg: #f0f0f0;
 $input-border: #ccc;
@@ -8,32 +8,29 @@ $primary-hover: #4338ca;
 .highschool-page {
   display: flex;
   height: 100vh;
+  width: 100%;
 }
 
 .form-side {
-  width: 400px;
+  width: 30%;
+  height: 100vh;
+  overflow: hidden;
   min-width: 320px;
   background: #fff;
   box-shadow: 2px 0 16px rgba(44, 62, 80, 0.08);
   display: flex;
   flex-direction: column;
   position: relative;
-}
 
-.cards-side {
-  flex: 1;
-  background: #f7fafc;
-  overflow-y: auto;
-  padding: 2.5rem 2rem;
-}
+  .form-wrapper {
+    padding: 2rem 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 1rem;
+    color: black;
+  }
 
-.form-wrapper {
-  padding: 2rem 2rem 1rem;
-  display: flex;
-  flex-direction: column;
-  background: white;
-  border-radius: 1rem;
-  color: black;
 }
 
 form {
@@ -41,10 +38,10 @@ form {
   display: flex;
   flex-direction: column;
   gap: $form-gap;
-  margin-top: 3rem;
+  margin-top: 1rem;
 
   h2 {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     font-size: 1.5rem;
     font-weight: bold;
     text-align: center;
@@ -138,10 +135,21 @@ form {
   margin-bottom: 0.75rem;
 }
 
+
+.cards-side {
+  flex: 1;
+  background: #f7fafc;
+  overflow-y: auto;
+  padding: 1.5rem 2rem;
+}
+
 .card-section {
-  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 
   .card-container {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -152,4 +160,82 @@ form {
     color: #6b7280;
     margin-top: 1rem;
   }
+}
+
+.toggle-area {
+  height: 7%;
+  width: 100%;
+  display: flex;
+  flex-direction: line;
+
+  .sort-buttons {
+    height: 100%;
+    width: 75%;
+  }
+
+  .toggle-zone {
+    width: 25%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+
+    label {
+      font-size: 18px;
+      color: #333; 
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* Slider-ul */
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: background-color 0.3s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: transform 0.3s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: #007ad9;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(24px);
+    }
+  }
+
+}
+
+#chart {
+  background-color: #004b66;
 }
