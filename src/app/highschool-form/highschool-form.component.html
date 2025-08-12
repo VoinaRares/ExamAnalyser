@@ -1,33 +1,43 @@
-<div class="page">
-  <div class="left">
+<div class="highschool-page">
+  <div class="form-side">
     <div class="form-wrapper">
+      <button class="home-button" (click)="navigateHome()">
+        <i class="fa fa-home"></i>
+      </button>
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <h2>Admitere Liceu</h2>
 
         <label for="county">Județ*</label>
         <select id="county" formControlName="county">
+          <option value="" disabled selected>Selectează județul</option>
           @for (c of counties; track c.value) {
           <option [value]="c.value">{{ c.label }}</option>
           }
         </select>
-        @if (form.get('county')?.touched && form.get('county')?.invalid) {
+        @if (countyControl?.touched && countyControl?.invalid) {
         <div class="form-error">Selectează un județ.</div>
         }
 
         <label for="year">An*</label>
         <select id="year" formControlName="year" [disabled]="!years.length">
-          <option [ngValue]="null" disabled selected>Selectează anul</option>
+          <option [ngValue]="null" disabled>Selectează anul</option>
           @for (year of years; track year) {
           <option [ngValue]="year">{{ year }}</option>
           }
         </select>
-        @if (form.get('year')?.touched && form.get('year')?.invalid) {
+        @if (yearControl?.touched && yearControl?.invalid) {
         <div class="form-error">Selectează un an.</div>
         }
 
         <label for="grade">Notă*</label>
-        <p-inputNumber id="grade" formControlName="grade" [min]="1" [max]="10" mode="decimal"
-          inputStyleClass="custom-input"></p-inputNumber>
+        <p-inputNumber
+          id="grade"
+          formControlName="grade"
+          [min]="1"
+          [max]="10"
+          mode="decimal"
+          inputStyleClass="custom-input"
+        ></p-inputNumber>
         @if (gradeControl && gradeControl.touched && gradeControl.errors) {
         <div class="form-error">
           @if (gradeControl.errors['required']) { Introdu nota. } @if
@@ -36,38 +46,44 @@
         </div>
         }
 
-        <label for="delimiter">Delimitator (opțional)</label>
-        <p-inputNumber id="delimiter" formControlName="delimiter" inputStyleClass="custom-input"></p-inputNumber>
+        <label for="delimiter">Media generală (opțional)</label>
+        <p-inputNumber
+          id="delimiter"
+          formControlName="delimiter"
+          inputStyleClass="custom-input"
+        ></p-inputNumber>
 
-        <button pButton type="submit" label="Calculează" class="submit-button"></button>
+        <button
+          pButton
+          type="submit"
+          label="Calculează"
+          class="submit-button"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Vezi evoluția ultimului admis"
+          class="chart-button"
+          (click)="goToRanker()"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Vezi gradul de ocupare"
+          class="chart-button"
+        ></button>
       </form>
     </div>
   </div>
-
-  <div class="right">
-    <div class="button-group">
-      <button class="chart-button" (click)="goToRanker()">
-        Vezi evoluția ultimului admis
-      </button>
-
-      <button class="chart-button">
-        Vezi gradul de ocupare
-      </button>
-    </div>
-
-    <div class="instructions">
-      <h3>Instrucțiuni de completare</h3>
-      <ol>
-        <li>Selectează județul dorit din listă.</li>
-        <li>Alege anul pentru care vrei să vezi datele.</li>
-        <li>Introdu nota obținută la Evaluarea Națională.</li>
-        <li>(Opțional) setează un delimitator pentru notă.</li>
-        <li>Apasă „Calculează” pentru a vedea sugestii.</li>
-      </ol>
+  <div class="cards-side">
+    <div class="card-section">
+      <div class="card-section-wrapper">
+        <div class="card-container">
+          @for (group of specializationGroups; track group) {
+          <app-school-card [specialization]="group"></app-school-card>
+          }
+        </div>
+      </div>
     </div>
   </div>
-
-  <button class="home-button" (click)="navigateHome()">
-    <i class="fa fa-home"></i>
-  </button>
 </div>

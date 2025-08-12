@@ -24,6 +24,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     InputNumberModule,
     InputTextModule,
     ButtonModule,
+    SchoolCardComponent,
   ],
   templateUrl: './highschool-form.component.html',
   styleUrl: './highschool-form.component.scss',
@@ -40,7 +41,7 @@ export class HighschoolFormComponent implements OnInit {
   years: number[] = [];
   specializationGroups: SpecializationGroup[] = [];
 
-  route=inject(ActivatedRoute)
+  route = inject(ActivatedRoute);
 
   constructor(
     private fb: FormBuilder,
@@ -77,33 +78,24 @@ export class HighschoolFormComponent implements OnInit {
   }
 
   onSubmit() {
-  if (this.form.invalid) {
-    this.form.markAllAsTouched(); // show validation errors
-    return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const { county, year, grade } = this.form.value;
+
+    if (county && year && grade != null) {
+      this.dataService
+        .getGroupedSchools(county, year)
+        .subscribe((groups: SpecializationGroup[]) => {
+          this.specializationGroups = groups
+            .filter((group) => grade >= group.lowestAdmissionGrade)
+            .sort((a, b) => b.lowestAdmissionGrade - a.lowestAdmissionGrade);
+        });
+    }
   }
-  this.router.navigate(['/vezi-licee'],{
-      relativeTo: this.route,
-      queryParams: {
-        judet: this.form.get('county')?.value,
-        an: this.form.get('year')?.value,
-        nota: this.form.get('grade')?.value,
-        delimiter:  this.form.get("delimiter")?.value || null,
-      },
-      queryParamsHandling: 'merge'
-    })
-  const { county, year, grade } = this.form.value;
 
-  if (county && year && grade != null) {
-    this.dataService.getGroupedSchools(county, year).subscribe((groups: SpecializationGroup[]) => {
-      this.specializationGroups = groups
-        .filter((group) => grade >= group.lowestAdmissionGrade)
-        .sort((a, b) => b.lowestAdmissionGrade - a.lowestAdmissionGrade);
-    });
-  }
-}
-
-
-  //To add county specificity for the ranker
   goToRanker() {
     this.router.navigate(['/clasament-ultimele-admiteri']);
   }
@@ -125,6 +117,6 @@ export class HighschoolFormComponent implements OnInit {
   }
 
   navigateHome() {
-    this.router.navigate(["/"])
+    this.router.navigate(['/']);
   }
 }
