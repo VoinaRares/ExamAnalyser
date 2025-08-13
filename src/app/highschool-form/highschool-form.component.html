@@ -30,8 +30,10 @@
         }
 
         <label for="grade">Notă*</label>
-        <p-inputNumber id="grade" formControlName="grade" [min]="1" [max]="10" mode="decimal"
-          inputStyleClass="custom-input"></p-inputNumber>
+        <p-inputNumber id="grade" formControlName="grade" [min]="1" [max]="10" mode="decimal" [step]="0.01"
+          [maxFractionDigits]="2" inputStyleClass="custom-input" locale="ro-RO" decimalSeparator=","
+          thousandSeparator=".">
+        </p-inputNumber>
 
         @if (gradeControl && gradeControl.touched && gradeControl.errors) {
         <div class="form-error">
@@ -51,21 +53,23 @@
     </div>
   </div>
   <div class="cards-side">
+    @if(specializationGroups.length>0){
     <div class="toggle-area">
       <div class="sort-buttons">A</div>
       <div class="toggle-zone">
         <label for="showOccupancy">Afișează grad ocupare</label>
         <label class="switch">
-          <input type="checkbox"  [(ngModel)]="showOccupancy" (change)="onToggleChange()">
+          <input type="checkbox" [(ngModel)]="showOccupancy" (change)="onToggleChange()">
           <span class="slider"></span>
         </label>
       </div>
-    </div>
+    </div>}
     <div class="card-section">
       <div class="card-section-wrapper">
         <div class="card-container">
           @for (group of specializationGroups; track group) {
-          <app-school-card [specialization]="group" [showOccupationRate]="showOccupancy"></app-school-card>
+          <app-school-card [specialization]="group" [showOccupationRate]="showOccupancy"
+            [occupationRate]="occupationRate[group.school+group.specialization]"></app-school-card>
           }
         </div>
       </div>

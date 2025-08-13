@@ -45,6 +45,8 @@ export class HighschoolFormComponent implements OnInit {
   specializationGroups: SpecializationGroup[] = [];
   showOccupancy: boolean = false;
 
+  occupationRate: Record<string,string>={}
+
   route = inject(ActivatedRoute);
 
   constructor(
@@ -94,7 +96,6 @@ export class HighschoolFormComponent implements OnInit {
       }
     });
 
-    // ✅ Când se schimbă județul, încărcăm anii disponibili
     this.form.get('county')?.valueChanges.subscribe((county) => {
       if (county) {
         this.dataService
@@ -129,7 +130,8 @@ export class HighschoolFormComponent implements OnInit {
         });
     }
 
-    this.router.navigate(['/recomandare-liceu'], {
+    this.router.navigate(['/recomandare-liceu'],
+       {
       relativeTo: this.route,
       queryParams: {
         judet: county,
@@ -153,15 +155,24 @@ export class HighschoolFormComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  //pentru sortarea pe care o voi face ulterior
+  //pentru sortarea dupa grad ocupare pe care o voi face ulterior
   setSort(sort: string) {
     this.activeSort = sort
   }
 
   onToggleChange() {
     if (this.showOccupancy) {
-      // logica când e activat
-      console.log("Gradul de ocupare este afișat");
+      if(Object.keys(this.occupationRate).length === 0)
+      {
+        for (let highschool of this.specializationGroups)
+        {
+            let numberOfCandidates= highschool.candidates.length
+
+            let occupationNumber=highschool.candidates.filter((item)=> Number(item.madm) >= Number(this.form.value.grade) && this.dataService.extractSpecializationName(item.sp)==highschool.specialization).length
+            this.occupationRate[highschool.school+highschool.specialization]=(occupationNumber/numberOfCandidates*100).toFixed(2)
+        }
+        //console.log(this.occupationRate)
+      }
     } else {
       // logica când e dezactivat
       console.log("Gradul de ocupare este ascuns");

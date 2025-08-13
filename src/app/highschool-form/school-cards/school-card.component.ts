@@ -12,7 +12,7 @@ import { SpecializationGroup } from '../../shared/model/specialization-group.int
 })
 export class SchoolCardComponent {
   @Input() specialization!: SpecializationGroup;
-  occupationRate=input(0);
+  occupationRate=input('');
   showOccupationRate=input(false)
 
   formatGrade(grade: string | number): string {

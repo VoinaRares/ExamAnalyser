@@ -30,6 +30,7 @@ export class DataService {
     return this.getExamDataForYear(county, year).pipe(
       map((data) => {
         const rankedData = this.addCountyRanking(data);
+
         return this.groupBySpecialization(rankedData);
       })
     );
@@ -118,7 +119,7 @@ export class DataService {
     return match ? match[1] : '';
   }
 
-  private extractSpecializationName(sp: string): string {
+  public extractSpecializationName(sp: string): string {
     const cleaned = this.cleanHtml(sp);
     const parts = cleaned.split(/\s*[\n\r]*<br\/?>\s*|\s*Limba\s+/i);
     return parts[0]?.trim() ?? '';
