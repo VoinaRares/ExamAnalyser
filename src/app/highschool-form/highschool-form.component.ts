@@ -45,6 +45,16 @@ export class HighschoolFormComponent implements OnInit {
   get gradeControl() {
     return this.form.get('grade');
   }
+  get showOccupancy() {
+    return this.state.showOccupancy;
+  }
+  get occupationRate() {
+    return this.state.occupationRate;
+  }
+
+  onToggleChange() {
+    this.state.toggleOccupancy();
+  }
 
   constructor(
     public state: HighschoolFormStateService,

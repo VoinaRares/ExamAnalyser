@@ -11,6 +11,8 @@ export class HighschoolFormStateService {
   counties: { label: string; value: string }[] = [];
   years: number[] = [];
   specializationGroups: any[] = [];
+  showOccupancy = false;
+  occupationRate: Record<string, string> = {};
 
   constructor(
     private fb: FormBuilder,
@@ -85,5 +87,17 @@ export class HighschoolFormStateService {
     this.facade
       .loadFilteredSpecializationGroups(county, year, grade)
       .subscribe((groups) => (this.specializationGroups = groups));
+  }
+
+  toggleOccupancy() {
+    this.showOccupancy = !this.showOccupancy;
+
+    if (this.showOccupancy && this.specializationGroups.length > 0) {
+      const grade = this.form.value.grade;
+      this.occupationRate = this.facade.getOccupationRates(
+        this.specializationGroups,
+        grade
+      );
+    }
   }
 }

@@ -43,4 +43,25 @@ export class HighschoolFacadeService {
       )
     );
   }
+
+  getOccupationRates(groups: any[], grade: number): Record<string, string> {
+    const occupationRate: Record<string, string> = {};
+
+    for (let highschool of groups) {
+      const numberOfCandidates = highschool.candidates.length;
+
+      const occupationNumber = highschool.candidates.filter(
+        (item: { madm: any; sp: string; }) =>
+          Number(item.madm) >= grade &&
+          this.dataService.extractSpecializationName(item.sp) === highschool.specialization
+      ).length;
+
+      occupationRate[highschool.school + highschool.specialization] = (
+        (occupationNumber / numberOfCandidates) *
+        100
+      ).toFixed(2);
+    }
+
+    return occupationRate;
+  }
 }
