@@ -1,7 +1,7 @@
 <div class="highschool-page">
   <div class="form-side">
     <div class="form-wrapper">
-      <button class="home-button" (click)="navigateHome()">
+      <button class="home-button" (click)="navigateHome()" type="button">
         <i class="fa fa-home"></i>
       </button>
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -9,7 +9,7 @@
 
         <label for="county">Județ*</label>
         <select id="county" formControlName="county">
-          <option value="" disabled selected>Selectează județul</option>
+          <option value="" disabled>Selectează județul</option>
           @for (c of counties; track c.value) {
           <option [value]="c.value">{{ c.label }}</option>
           }
@@ -20,9 +20,9 @@
 
         <label for="year">An*</label>
         <select id="year" formControlName="year" [disabled]="!years.length">
-          <option [ngValue]="null" disabled>Selectează anul</option>
+          <option value="" disabled>Selectează anul</option>
           @for (year of years; track year) {
-          <option [ngValue]="year">{{ year }}</option>
+          <option [value]="year">{{ year }}</option>
           }
         </select>
         @if (yearControl?.touched && yearControl?.invalid) {
@@ -36,6 +36,7 @@
           [min]="1"
           [max]="10"
           mode="decimal"
+          [step]="0.01"
           inputStyleClass="custom-input"
         ></p-inputNumber>
         @if (gradeControl && gradeControl.touched && gradeControl.errors) {
@@ -59,19 +60,12 @@
           label="Calculează"
           class="submit-button"
         ></button>
-        <button
-          pButton
-          type="button"
-          label="Vezi evoluția ultimului admis"
-          class="chart-button"
-          (click)="goToRanker()"
-        ></button>
-        <button
-          pButton
-          type="button"
-          label="Vezi gradul de ocupare"
-          class="chart-button"
-        ></button>
+        <button class="chart-button" (click)="goToRanker()" type="button">
+          Vezi evoluția ultimului admis
+        </button>
+        <button class="chart-button" type="button">
+          Vezi gradul de ocupare
+        </button>
       </form>
     </div>
   </div>
@@ -79,7 +73,7 @@
     <div class="card-section">
       <div class="card-section-wrapper">
         <div class="card-container">
-          @for (group of specializationGroups; track group) {
+          @for (group of specializationGroups; track group.id) {
           <app-school-card [specialization]="group"></app-school-card>
           }
         </div>

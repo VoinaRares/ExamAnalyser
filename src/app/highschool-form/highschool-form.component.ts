@@ -1,19 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  FormControl,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { DataService } from '../shared/service/data.service';
 import { SchoolCardComponent } from './school-cards/school-card.component';
-import { SpecializationGroup } from '../shared/model/specialization-group.interface';
-import { ActivatedRoute, Router } from '@angular/router';
+import { HighschoolFormStateService } from './highschool-form-state.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-highschool-form',
@@ -27,96 +20,51 @@ import { ActivatedRoute, Router } from '@angular/router';
     SchoolCardComponent,
   ],
   templateUrl: './highschool-form.component.html',
-  styleUrl: './highschool-form.component.scss',
+  styleUrls: ['./highschool-form.component.scss'],
+  providers: [HighschoolFormStateService],
 })
 export class HighschoolFormComponent implements OnInit {
-  form: FormGroup<{
-    county: FormControl<string | null>;
-    year: FormControl<number | null>;
-    grade: FormControl<number | null>;
-    delimiter: FormControl<number | null>;
-  }>;
-
-  counties: { label: string; value: string }[] = [];
-  years: number[] = [];
-  specializationGroups: SpecializationGroup[] = [];
-
-  route = inject(ActivatedRoute);
-
-  constructor(
-    private fb: FormBuilder,
-    private dataService: DataService,
-    private router: Router
-  ) {
-    this.form = this.fb.group({
-      county: this.fb.control<string | null>(null, Validators.required),
-      year: this.fb.control<number | null>(null, Validators.required),
-      grade: this.fb.control<number | null>(null, [
-        Validators.required,
-        Validators.min(1),
-        Validators.max(10),
-      ]),
-      delimiter: this.fb.control<number | null>(null),
-    });
+  get form() {
+    return this.state.form;
   }
-
-  ngOnInit() {
-    this.dataService.getCounties().subscribe((counties) => {
-      this.counties = counties;
-    });
-
-    this.form.get('county')?.valueChanges.subscribe((county) => {
-      if (county) {
-        this.dataService
-          .getAvailableYears(county)
-          .subscribe((years: number[]) => {
-            this.years = years;
-            this.form.get('year')?.reset();
-          });
-      }
-    });
+  get counties() {
+    return this.state.counties;
   }
-
-  onSubmit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    const { county, year, grade } = this.form.value;
-
-    if (county && year && grade != null) {
-      this.dataService
-        .getGroupedSchools(county, year)
-        .subscribe((groups: SpecializationGroup[]) => {
-          this.specializationGroups = groups
-            .filter((group) => grade >= group.lowestAdmissionGrade)
-            .sort((a, b) => b.lowestAdmissionGrade - a.lowestAdmissionGrade);
-        });
-    }
+  get years() {
+    return this.state.years;
   }
-
-  goToRanker() {
-    this.router.navigate(['/clasament-ultimele-admiteri']);
+  get specializationGroups() {
+    return this.state.specializationGroups;
   }
-
-  goBack() {
-    this.router.navigate(['/']);
-  }
-
   get countyControl() {
     return this.form.get('county');
   }
-
   get yearControl() {
     return this.form.get('year');
   }
-
   get gradeControl() {
     return this.form.get('grade');
   }
 
+  constructor(
+    public state: HighschoolFormStateService,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    this.state.initialize().subscribe();
+    this.state.handleCountyChange();
+  }
+
   navigateHome() {
     this.router.navigate(['/']);
+  }
+
+  onSubmit() {
+    this.state.submit();
+  }
+
+  goToRanker() {
+    this.router.navigate(['/last-admission-ranker']);
   }
 }
