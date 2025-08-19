@@ -1,4 +1,13 @@
-<p-card [header]="specialization.school">
+<p-card>
+  <div class="card-header">
+    <div class="school-name">{{ specialization.school }}</div>
+    @if(showOccupationRate()==true)
+    {
+       <div class="occupancy">Grad ocupare: {{occupationRate()}}%</div>
+    }
+   
+  </div>
+
   <div class="p-text-secondary">
     <div class="mb-2">
       <strong>Specializare:</strong>

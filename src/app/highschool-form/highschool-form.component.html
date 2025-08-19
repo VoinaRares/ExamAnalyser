@@ -48,11 +48,7 @@
         }
 
         <label for="delimiter">Media generală (opțional)</label>
-        <p-inputNumber
-          id="delimiter"
-          formControlName="delimiter"
-          inputStyleClass="custom-input"
-        ></p-inputNumber>
+        <p-inputNumber id="delimiter" formControlName="delimiter" inputStyleClass="custom-input"></p-inputNumber>
 
         <button
           pButton
@@ -70,6 +66,17 @@
     </div>
   </div>
   <div class="cards-side">
+    @if(specializationGroups.length>0){
+    <div class="toggle-area">
+      <div class="sort-buttons">A</div>
+      <div class="toggle-zone">
+        <label for="showOccupancy">Afișează grad ocupare</label>
+        <!-- <label class="switch">
+          <input type="checkbox" [(ngModel)]="showOccupancy" (change)="onToggleChange()">
+          <span class="slider"></span>
+        </label> -->
+      </div>
+    </div>}
     <div class="card-section">
       <div class="card-section-wrapper">
         <div class="card-container">
