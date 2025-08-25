@@ -5,6 +5,7 @@ import { County } from '../../shared/county.enum';
 
 @Component({
   selector: 'app-county-selector',
+  standalone: true,
   imports: [FormsModule],
   templateUrl: './county-selector.component.html',
   styleUrl: './county-selector.component.scss'
@@ -13,7 +14,7 @@ export class CountySelectorComponent {
     selectedCounty: County| ''=''
     county=output<string>()
 
-    counties = Object.values(County); 
+    counties = Object.values(County);
 
     emitSelectedCounty()
     {
@@ -21,5 +22,5 @@ export class CountySelectorComponent {
       this.county.emit(this.selectedCounty);
     }
 
-    
+
 }

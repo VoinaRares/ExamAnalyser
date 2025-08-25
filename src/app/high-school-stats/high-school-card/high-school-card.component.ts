@@ -3,6 +3,7 @@ import { HighschoolStats } from '../../shared/model/highSchoolStats';
 
 @Component({
   selector: 'app-high-school-card',
+  standalone: true,
   imports: [],
   templateUrl: './high-school-card.component.html',
   styleUrl: './high-school-card.component.scss'
